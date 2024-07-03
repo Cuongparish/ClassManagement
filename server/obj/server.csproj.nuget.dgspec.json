@@ -1,32 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Tài liệu năm 4 kì 2\\ggclassroomclone\\server\\server.csproj": {}
+    "D:\\ggclassromclone\\ggclassroomclone\\server\\server.csproj": {}
   },
   "projects": {
-    "D:\\Tài liệu năm 4 kì 2\\ggclassroomclone\\server\\server.csproj": {
+    "D:\\ggclassromclone\\ggclassroomclone\\server\\server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Tài liệu năm 4 kì 2\\ggclassroomclone\\server\\server.csproj",
+        "projectUniqueName": "D:\\ggclassromclone\\ggclassroomclone\\server\\server.csproj",
         "projectName": "server",
-        "projectPath": "D:\\Tài liệu năm 4 kì 2\\ggclassroomclone\\server\\server.csproj",
+        "projectPath": "D:\\ggclassromclone\\ggclassroomclone\\server\\server.csproj",
         "packagesPath": "C:\\Users\\cuong\\.nuget\\packages\\",
-        "outputPath": "D:\\Tài liệu năm 4 kì 2\\ggclassroomclone\\server\\obj\\",
+        "outputPath": "D:\\ggclassromclone\\ggclassroomclone\\server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cuong\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net6.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -34,15 +35,24 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.2.3, )"
+              "version": "[6.4.0, )"
             }
           },
           "imports": [
@@ -51,7 +61,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -63,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
