@@ -36,8 +36,6 @@ namespace server.Controllers
             {
                 page = query.PageNumber,
                 per_page = query.PageSize,
-                // total = await _stockRepo.GetTotalCountAsync(query),
-                // total_pages = (int)Math.Ceiling((double)await _stockRepo.GetTotalCountAsync(query) / query.PageSize),
                 data = stockDto
             };
             return Ok(result);
