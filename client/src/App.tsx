@@ -10,7 +10,6 @@ import {
 function App() {
   return (
     <Router>
-      <div>
         <Routes>
           {routes.map((route, index) => {
             const Layout = route.layout || EmptyLayout;
@@ -35,7 +34,6 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/" element={<Navigate to="/introduction" />} />
         </Routes>
-      </div>
     </Router>
   )
 }
