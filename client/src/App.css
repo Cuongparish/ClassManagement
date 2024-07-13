@@ -1,0 +1,23 @@
+.left-banner {
+  background-image: linear-gradient(#24243e, #59599b, #0f0c29);
+  overflow: hidden;
+  position: relative;
+}
+
+.ant-checkbox .ant-checkbox-inner {
+  border-color: #59599b !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #59599b !important;
+  border-color: #59599b !important;
+}
+
+.ant-checkbox:hover .ant-checkbox-inner {
+  border-color: #59599b !important;
+}
+
+.ant-checkbox-checked:hover .ant-checkbox-inner {
+  background-color: #59599b !important;
+    border-color: #59599b !important;
+}

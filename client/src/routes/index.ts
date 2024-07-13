@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
-import { HomeLayout, AdminLayout, EmptyLayout } from "../layouts";
+import { EmptyLayout } from "../layouts";
 
-import * as Landing from "../pages/LandingPage";
+import * as Authentication from "../pages/Authentication";
 
 interface LayoutProp {
   children: React.ReactNode | React.ReactElement<unknown>;
@@ -16,7 +16,10 @@ interface RouteItem {
 }
 
 const routes: RouteItem[] = [
-  { path: "/introduction", page: Landing.LandingPage, layout: EmptyLayout },
+  { path: "/introduction", page: Authentication.LandingPage, layout: EmptyLayout },
+  { path: "/login", page: Authentication.LoginPage, layout: EmptyLayout },
+  { path: "/signup", page: Authentication.SignupPage, layout: EmptyLayout },
+
 ];
 
 export default routes;
