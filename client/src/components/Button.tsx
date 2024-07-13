@@ -4,6 +4,7 @@ import { TinyColor } from '@ctrl/tinycolor';
 export interface ButtonProp {
     name: string,
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void,
+    className?: string,
 }
 
 const PrimaryButton = (prop: ButtonProp) => {
@@ -28,7 +29,7 @@ const PrimaryButton = (prop: ButtonProp) => {
                 },
             }}
         >
-            <Button type="primary" className="w-40 h-12 text-lg" onClick={prop.onClick}>
+            <Button type="primary" className={`w-40 h-12 text-lg ${prop.className}`} onClick={prop.onClick}>
                 {prop.name}
             </Button>
         </ConfigProvider>

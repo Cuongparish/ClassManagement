@@ -2,7 +2,7 @@ import React from 'react';
 import LeftBanner from "./components/LeftBanner";
 import { PrimaryButton, GoogleButton, FaceBookButton } from "../../components/Button";
 
-
+import { Link } from 'react-router-dom';
 import { FaChevronLeft } from "react-icons/fa";
 import { Input } from 'antd';
 
@@ -17,7 +17,9 @@ const LoginPage = (): React.ReactElement => {
             <div className="h-screen w-2/3">
                 <div className="flex justify-between">
                     <div className='text-xl pl-10 pt-5'>
-                        <FaChevronLeft className='inline' /> Return Home{" "}
+                        <Link to="/" className='flex items-center text-black'>
+                            <FaChevronLeft className='inline' /> Return Home
+                        </Link>
                     </div>
                     <div className='text-xl pr-5 pt-5'>
                         <span>

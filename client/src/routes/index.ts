@@ -18,6 +18,8 @@ interface RouteItem {
 const routes: RouteItem[] = [
   { path: "/introduction", page: Authentication.LandingPage, layout: EmptyLayout },
   { path: "/login", page: Authentication.LoginPage, layout: EmptyLayout },
+  { path: "/signup", page: Authentication.SignupPage, layout: EmptyLayout },
+
 ];
 
 export default routes;
