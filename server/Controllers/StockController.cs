@@ -10,6 +10,7 @@ using server.Interfaces;
 using server.Mappers;
 using Newtonsoft.Json;
 using server.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace server.Controllers
 {
@@ -42,6 +43,7 @@ namespace server.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var stocks = await _stockRepo.GetByIdAsync(id);
