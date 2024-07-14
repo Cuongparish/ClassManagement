@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
 
 namespace server.Data
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext<AppUser>
     {
         public ApplicationDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
@@ -26,9 +28,24 @@ namespace server.Data
         public DbSet<PhucKhao> PhucKhaos { get; set; }
         public DbSet<ThongBao> ThongBaos { get; set; }
         public DbSet<User> Users { get; set; }
-        // protected override void OnModelCreating(ModelBuilder builder)
-        // {
-        //     base.OnModelCreating(builder);
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            List<IdentityRole> roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER"
+                },
+            };
+            builder.Entity<IdentityRole>().HasData(roles);
+        }
 
         // cot diem
         // 1 cot diem thuoc 1 lop hoc
