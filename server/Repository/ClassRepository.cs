@@ -18,6 +18,15 @@ namespace server.Repository
         public async Task<LopHoc> CreateAsync(LopHoc classModel)
         {
             //create class
+            var random = new Random();
+            string chars = "123456789asdlkjqwepoizxcnbg";
+            var result = new char[6];
+            for (int i = 0; i < 6; i++)
+            {
+                result[i] = chars[random.Next(chars.Length)];
+            }
+
+            classModel.maLop = new string(result);
             await _context.LopHocs.AddAsync(classModel);
             await _context.SaveChangesAsync();
 

@@ -13,6 +13,7 @@ namespace server.Mappers
         {
             return new UserDto
             {
+                id = userModel.id,
                 email = userModel.email,
                 pw = userModel.pw,
                 fullName = userModel.fullName,

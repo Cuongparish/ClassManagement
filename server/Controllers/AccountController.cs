@@ -55,7 +55,8 @@ namespace server.Controllers
             return Ok(
                 new NewUserDto
                 {
-                    email = user.UserName,
+                    id = userModel.id,
+                    email = user.Email,
                     pw = user.PasswordHash,
                     fullName = userModel.fullName,
                     dob = userModel.dob,
@@ -104,6 +105,7 @@ namespace server.Controllers
                     {
                         return Ok(new NewUserDto
                         {
+                            id = userModel.id,
                             email = appUser.UserName,
                             pw = appUser.PasswordHash,
                             fullName = userModel.fullName,

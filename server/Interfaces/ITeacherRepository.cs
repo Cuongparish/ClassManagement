@@ -9,6 +9,7 @@ namespace server.Interfaces
     public interface ITeacherRepository
     {
         Task<GiaoVien> CreateAsync(GiaoVien teacherModel);
-        Task<bool> IsExistsAsync(int userId);
+        Task<GiaoVien?> IsExistsAsync(int userId);
+        Task<GiaoVienLopHoc> CreateAsync(GiaoVienLopHoc giaoVienLopHocModel);
     }
 }

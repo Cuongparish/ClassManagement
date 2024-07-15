@@ -11,7 +11,7 @@ namespace server.Dtos.Account
         // public string? Email { get; set; }
         // public string? Password { get; set; }
 
-        // public int id { get; set; }
+        public int id { get; set; }
         public string? email { get; set; } = string.Empty;
         public string? pw { get; set; } = string.Empty;
         public string? fullName { get; set; } = string.Empty;

@@ -55,7 +55,7 @@ namespace server.Controllers
             }
 
 
-            return Ok(userClaims);
+            return Ok(stocks.ToStockDto());
         }
 
         [HttpPost]

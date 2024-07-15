@@ -35,16 +35,24 @@ namespace server.Repository
         //     return teacherModel;
         // }
 
-
-        public async Task<bool> IsExistsAsync(int userId)
+        public async Task<GiaoVien?> IsExistsAsync(int userId)
         {
-            var existingTeacher = await _context.GiaoViens.FirstOrDefaultAsync(i => i.userId == userId);
-            if (existingTeacher == null)
+            var teacher = await _context.GiaoViens.FirstOrDefaultAsync(i => i.userId == userId);
+            if (teacher == null)
             {
-                return false;
+                return null;
             }
-            return true;
+            return teacher;
         }
+
+        public async Task<GiaoVienLopHoc> CreateAsync(GiaoVienLopHoc giaoVienLopHocModel)
+        {
+            await _context.GiaoVienLopHocs.AddAsync(giaoVienLopHocModel);
+            await _context.SaveChangesAsync();
+
+            return giaoVienLopHocModel;
+        }
+
 
     }
 }

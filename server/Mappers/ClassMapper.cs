@@ -28,7 +28,6 @@ namespace server.Mappers
                 tenLop = classDto.tenLop,
                 chuDe = classDto.chuDe,
                 phong = classDto.phong,
-                maLop = classDto.maLop,
                 state = classDto.state
             };
         }
