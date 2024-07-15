@@ -6,8 +6,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Dtos.Account;
+using server.Dtos.User;
 using server.Interfaces;
 using server.Models;
+using server.Controllers;
+using server.Data;
+using server.Mappers;
 
 namespace server.Controllers
 {
@@ -18,9 +22,13 @@ namespace server.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signinManager;
+        private readonly IUserRepository _userRepo;
+        private readonly ApplicationDBContext _context;
         // , ITokenService tokenService, SignInManager<AppUser> signInManager
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
+        public AccountController(ApplicationDBContext context, IUserRepository userRepo, UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
         {
+            _userRepo = userRepo;
+            _context = context;
             _userManager = userManager;
             _tokenService = tokenService;
             _signinManager = signInManager;
@@ -29,6 +37,7 @@ namespace server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -40,11 +49,18 @@ namespace server.Controllers
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
+            var user1 = await _userRepo.GetByUsernameAsync(user.UserName);
+            var userModel = user1.ToUserDto();
+
             return Ok(
                 new NewUserDto
                 {
-                    UserName = user.UserName,
-                    Email = user.Email,
+                    email = user.UserName,
+                    pw = user.PasswordHash,
+                    fullName = userModel.fullName,
+                    dob = userModel.dob,
+                    sex = userModel.sex,
+                    phone = userModel.phone,
                     Token = _tokenService.CreateToken(user)
                 }
             );
@@ -53,7 +69,6 @@ namespace server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            Console.WriteLine("lỗi");
             try
             {
                 if (!ModelState.IsValid)
@@ -61,7 +76,7 @@ namespace server.Controllers
 
                 var appUser = new AppUser
                 {
-                    UserName = registerDto.Username,
+                    UserName = registerDto.Email,
                     Email = registerDto.Email
                 };
 
@@ -70,12 +85,31 @@ namespace server.Controllers
                 if (createdUser.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
+
+                    //gọi hàm để thêm thông tin người dùng vào chỗ này
+
+                    var user = new CreateUserRequestDto
+                    {
+                        email = registerDto.Email,
+                        pw = registerDto.Password,
+                        fullName = registerDto.fullName,
+                        dob = registerDto.dob,
+                        sex = registerDto.sex,
+                        phone = registerDto.phone
+                    };
+                    var userModel = user.ToUserFromCreateDTO();
+                    await _userRepo.CreateAsync(userModel);
+
                     if (roleResult.Succeeded)
                     {
                         return Ok(new NewUserDto
                         {
-                            UserName = appUser.UserName,
-                            Email = appUser.Email,
+                            email = appUser.UserName,
+                            pw = appUser.PasswordHash,
+                            fullName = userModel.fullName,
+                            dob = userModel.dob,
+                            sex = userModel.sex,
+                            phone = userModel.phone,
                             Token = _tokenService.CreateToken(appUser)
                         });
                     }
