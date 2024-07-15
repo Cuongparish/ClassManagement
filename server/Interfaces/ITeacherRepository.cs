@@ -6,8 +6,9 @@ using server.Models;
 
 namespace server.Interfaces
 {
-    public interface IClassRepository
+    public interface ITeacherRepository
     {
-        Task<LopHoc> CreateAsync(LopHoc classModel);
+        Task<GiaoVien> CreateAsync(GiaoVien teacherModel);
+        Task<bool> IsExistsAsync(int userId);
     }
 }
