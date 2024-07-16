@@ -6,10 +6,8 @@ using server.Models;
 
 namespace server.Interfaces
 {
-    public interface IUserRepository
+    public interface IClassRepository
     {
-
-        Task<User> CreateAsync(User userModel);
-        Task<User?> GetByUsernameAsync(string email);
+        Task<LopHoc> CreateAsync(LopHoc classModel);
     }
 }

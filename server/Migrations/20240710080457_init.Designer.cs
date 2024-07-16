@@ -340,8 +340,8 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("phone")
-                        .HasColumnType("int");
+                    b.Property<string>("phone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("pw")
                         .IsRequired()

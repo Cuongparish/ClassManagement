@@ -47,10 +47,14 @@ namespace server.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var stocks = await _stockRepo.GetByIdAsync(id);
+            var userClaims = User.Claims;
+            Console.WriteLine(userClaims);
             if (stocks == null)
             {
                 return NotFound();
             }
+
+
             return Ok(stocks.ToStockDto());
         }
 

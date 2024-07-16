@@ -178,7 +178,7 @@ namespace server.Migrations
                     fullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     dob = table.Column<DateTime>(type: "datetime2", nullable: false),
                     sex = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    phone = table.Column<int>(type: "int", nullable: false)
+                    phone = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
