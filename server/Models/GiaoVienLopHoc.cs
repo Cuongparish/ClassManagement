@@ -11,12 +11,8 @@ namespace server.Models
     public class GiaoVienLopHoc
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int lopId { get; set; }
-        // public LopHoc? lopHoc { get; set; }
-        // public List<LopHoc> LopHocs { get; set; } = new List<LopHoc>();
-
         public int giaoVienId { get; set; }
-        // public List<GiaoVien> GiaoViens { get; set; } = new List<GiaoVien>();
-        // public GiaoVien? giaoVien { get; set; }
     }
 }

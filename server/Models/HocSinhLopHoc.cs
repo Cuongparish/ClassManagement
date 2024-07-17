@@ -11,12 +11,8 @@ namespace server.Models
     public class HocSinhLopHoc
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int lopId { get; set; }
-        // public LopHoc? LopHoc { get; set; }
-        // public List<LopHoc> LopHocs { get; set; } = new List<LopHoc>();
-
         public int hocSinhId { get; set; }
-        // public HocSinh? hocSinh { get; set; }
-        // public List<HocSinh> HocSinhs { get; set; } = new List<HocSinh>();
     }
 }
