@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Interfaces;
 using server.Models;
@@ -31,6 +32,14 @@ namespace server.Repository
             await _context.SaveChangesAsync();
 
             return classModel;
+        }
+
+        public async Task<List<LopHoc?>> GetByIdAsync(int[] ids)
+        {
+            var lopHocs = await _context.LopHocs
+            .Where(s => ids.Contains(s.id))
+            .ToListAsync();
+            return lopHocs.Cast<LopHoc?>().ToList();
         }
     }
 }

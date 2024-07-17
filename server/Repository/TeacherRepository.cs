@@ -53,6 +53,19 @@ namespace server.Repository
             return giaoVienLopHocModel;
         }
 
+        public async Task<List<GiaoVienLopHoc>> GetLopIdAsync(int giaoVienId)
+        {
+            var result = _context.GiaoVienLopHocs.AsQueryable();
+            result = result.Where(s => s.giaoVienId == giaoVienId);
+            return await result.ToListAsync();
+        }
+
+        public async Task<GiaoVien?> GetGiaoVienIdAsync(int userId)
+        {
+            var result = await _context.GiaoViens.FirstOrDefaultAsync(s => s.userId == userId);
+            return result;
+        }
+
 
     }
 }

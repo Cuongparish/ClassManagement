@@ -9,5 +9,6 @@ namespace server.Interfaces
     public interface IClassRepository
     {
         Task<LopHoc> CreateAsync(LopHoc classModel);
+        Task<List<LopHoc?>> GetByIdAsync(int[] ids);
     }
 }

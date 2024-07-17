@@ -11,5 +11,7 @@ namespace server.Interfaces
         Task<GiaoVien> CreateAsync(GiaoVien teacherModel);
         Task<GiaoVien?> IsExistsAsync(int userId);
         Task<GiaoVienLopHoc> CreateAsync(GiaoVienLopHoc giaoVienLopHocModel);
+        Task<List<GiaoVienLopHoc>> GetLopIdAsync(int giaoVienId);
+        Task<GiaoVien?> GetGiaoVienIdAsync(int userId);
     }
 }

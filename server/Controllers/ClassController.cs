@@ -38,6 +38,7 @@ namespace server.Controllers
 
                 //check exists teacher in table GiaoVien
                 var existingTeacher = await _teacherRepo.IsExistsAsync(userId);
+                //not exists
                 if (existingTeacher == null)
                 {
                     //add into table GiaoVien
@@ -57,6 +58,7 @@ namespace server.Controllers
                     var teacherClassModel = teacherClass.ToTeacherClassFromCreateDTO();
                     await _teacherRepo.CreateAsync(teacherClassModel);
                 }
+                //exists
                 //add into table GiaoVienLopHoc
                 var teacherClass1 = new CreateTeacherClassRequestDto
                 {
@@ -67,6 +69,35 @@ namespace server.Controllers
                 await _teacherRepo.CreateAsync(teacherClassModel1);
 
                 return Ok(classModel);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("{userId:int}")]
+        public async Task<IActionResult> Get([FromRoute] int userId)
+        {
+            try
+            {
+                //get giaoVienId
+                var teacher = await _teacherRepo.GetGiaoVienIdAsync(userId);
+                // // not exists
+                // if (teacher == null || !teacher.Any())
+                // {
+                //     // Xử lý trường hợp không có giáo viên nào
+                //     return;
+                // }
+                //get lopId
+                var lop = await _teacherRepo.GetLopIdAsync(teacher.id);
+                var lopIds = lop.Select(t => t.lopId).ToArray();
+                //getall class of teacher
+                await _classRepo.GetByIdAsync(lopIds);
+                //get hocSinhId
+                //get lopId
+                //getall class of student
+                return Ok(await _classRepo.GetByIdAsync(lopIds));
             }
             catch (Exception e)
             {
