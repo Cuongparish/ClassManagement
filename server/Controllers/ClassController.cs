@@ -81,23 +81,34 @@ namespace server.Controllers
         {
             try
             {
+                // var classOfTeacher = new List<ClassDto> { };
                 //get giaoVienId
                 var teacher = await _teacherRepo.GetGiaoVienIdAsync(userId);
                 // // not exists
-                // if (teacher == null || !teacher.Any())
+                // if (teacher == null)
                 // {
-                //     // Xử lý trường hợp không có giáo viên nào
-                //     return;
+                //     classOfTeacher = null;
+                // }
+                // else
+                // {
+
                 // }
                 //get lopId
                 var lop = await _teacherRepo.GetLopIdAsync(teacher.id);
                 var lopIds = lop.Select(t => t.lopId).ToArray();
                 //getall class of teacher
-                await _classRepo.GetByIdAsync(lopIds);
+                var classOfTeacher = await _classRepo.GetByIdAsync(lopIds);
+                var result = new
+                {
+                    Teacher = teacher,
+                    Lop = lop,
+                    Classes = classOfTeacher
+                };
+
                 //get hocSinhId
                 //get lopId
                 //getall class of student
-                return Ok(await _classRepo.GetByIdAsync(lopIds));
+                return Ok(result);
             }
             catch (Exception e)
             {
