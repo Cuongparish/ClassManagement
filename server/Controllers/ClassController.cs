@@ -19,10 +19,12 @@ namespace server.Controllers
         private readonly ApplicationDBContext _context;
         private readonly IClassRepository _classRepo;
         private readonly ITeacherRepository _teacherRepo;
-        public ClassController(ApplicationDBContext context, IClassRepository classRepo, ITeacherRepository teacherRepo)
+        private readonly IStudentRepository _studentRepo;
+        public ClassController(ApplicationDBContext context, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
         {
             _classRepo = classRepo;
             _teacherRepo = teacherRepo;
+            _studentRepo = studentRepo;
             _context = context;
         }
 
@@ -76,45 +78,137 @@ namespace server.Controllers
             }
         }
 
+        // [HttpGet("{userId:int}")]
+        // public async Task<IActionResult> Get([FromRoute] int userId)
+        // {
+        //     try
+        //     {
+        //         var result = new { };
+        //         //get giaoVienId
+        //         var teacher = await _teacherRepo.GetGiaoVienIdAsync(userId);
+        //         //get hocSinhId
+        //         var student = await _studentRepo.GetHocSinhIdAsync(userId);
+        //         // not exists
+        //         if (teacher == null)
+        //         {
+        //             //get lopId
+        //             var lop_student = await _studentRepo.GetLopIdAsync(student.id);
+        //             var lopIds_student = lop_student.Select(t => t.lopId).ToArray();
+        //             //getall class of teacher
+        //             var classOfStudent = await _classRepo.GetByIdAsync(lopIds_student);
+        //             var result_student = new
+        //             {
+        //                 Classes_Student = classOfStudent
+        //             };
+        //             return Ok(result_student);
+        //         }
+
+        //         if (student == null)
+        //         {
+        //             //get lopId
+        //             var lop = await _teacherRepo.GetLopIdAsync(teacher.id);
+        //             var lopIds = lop.Select(t => t.lopId).ToArray();
+        //             //getall class of teacher
+        //             var classOfTeacher = await _classRepo.GetByIdAsync(lopIds);
+        //             var result_teacher = new
+        //             {
+        //                 Classes_Teacher = classOfTeacher
+        //             };
+        //             return Ok(result_teacher);
+        //         }
+
+        //         var lop_student = await _studentRepo.GetLopIdAsync(student.id);
+        //         var lopIds_student = lop_student.Select(t => t.lopId).ToArray();
+        //         //getall class of teacher
+        //         var classOfStudent = await _classRepo.GetByIdAsync(lopIds_student);
+
+        //         var lop = await _teacherRepo.GetLopIdAsync(teacher.id);
+        //         var lopIds = lop.Select(t => t.lopId).ToArray();
+        //         //getall class of teacher
+        //         var classOfTeacher = await _classRepo.GetByIdAsync(lopIds);
+
+        //         var result = new
+        //         {
+        //             Classes_Teacher = classOfTeacher,
+        //             Classes_Student = classOfStudent
+        //         };
+
+        //         return Ok(result);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return StatusCode(500, e);
+        //     }
+        // }
+
         [HttpGet("{userId:int}")]
         public async Task<IActionResult> Get([FromRoute] int userId)
         {
             try
             {
-                // var classOfTeacher = new List<ClassDto> { };
                 //get giaoVienId
                 var teacher = await _teacherRepo.GetGiaoVienIdAsync(userId);
-                // // not exists
-                // if (teacher == null)
-                // {
-                //     classOfTeacher = null;
-                // }
-                // else
-                // {
-
-                // }
-                //get lopId
-                var lop = await _teacherRepo.GetLopIdAsync(teacher.id);
-                var lopIds = lop.Select(t => t.lopId).ToArray();
-                //getall class of teacher
-                var classOfTeacher = await _classRepo.GetByIdAsync(lopIds);
-                var result = new
-                {
-                    Teacher = teacher,
-                    Lop = lop,
-                    Classes = classOfTeacher
-                };
-
                 //get hocSinhId
-                //get lopId
-                //getall class of student
-                return Ok(result);
+                var student = await _studentRepo.GetHocSinhIdAsync(userId);
+
+                // not exists
+                if (teacher == null && student != null)
+                {
+                    //get lopId
+                    var lop_student_list = await _studentRepo.GetLopIdAsync(student.id);
+                    var lopIds_student = lop_student_list.Select(t => t.lopId).ToArray();
+                    //get all classes of student
+                    var classOfStudent = await _classRepo.GetByIdAsync(lopIds_student);
+                    var result_student = new
+                    {
+                        Classes_Student = classOfStudent
+                    };
+                    return Ok(result_student);
+                }
+
+                if (student == null && teacher != null)
+                {
+                    //get lopId
+                    var lop_teacher_list = await _teacherRepo.GetLopIdAsync(teacher.id);
+                    var lopIds_teacher = lop_teacher_list.Select(t => t.lopId).ToArray();
+                    //get all classes of teacher
+                    var classOfTeacher = await _classRepo.GetByIdAsync(lopIds_teacher);
+                    var result_teacher = new
+                    {
+                        Classes_Teacher = classOfTeacher
+                    };
+                    return Ok(result_teacher);
+                }
+
+                if (teacher != null && student != null)
+                {
+                    var lop_student_list = await _studentRepo.GetLopIdAsync(student.id);
+                    var lopIds_student = lop_student_list.Select(t => t.lopId).ToArray();
+                    //get all classes of student
+                    var classOfStudent = await _classRepo.GetByIdAsync(lopIds_student);
+
+                    var lop_teacher_list = await _teacherRepo.GetLopIdAsync(teacher.id);
+                    var lopIds_teacher = lop_teacher_list.Select(t => t.lopId).ToArray();
+                    //get all classes of teacher
+                    var classOfTeacher = await _classRepo.GetByIdAsync(lopIds_teacher);
+
+                    var result = new
+                    {
+                        Classes_Teacher = classOfTeacher,
+                        Classes_Student = classOfStudent
+                    };
+
+                    return Ok(result);
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
                 return StatusCode(500, e);
             }
         }
+
 
     }
 }

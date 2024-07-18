@@ -19,7 +19,7 @@ namespace server.Repository
 
         public async Task<GiaoVien> CreateAsync(GiaoVien teacherModel)
         {
-            //create class
+            //create teacher
             await _context.GiaoViens.AddAsync(teacherModel);
             await _context.SaveChangesAsync();
 

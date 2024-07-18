@@ -12,9 +12,7 @@ namespace server.Models
     {
         [Key]
         public int id { get; set; }
-
         public int userId { get; set; }
-        // public List<User> users { get; set; } = new List<User>();
         public User? user { get; set; }
     }
 }
