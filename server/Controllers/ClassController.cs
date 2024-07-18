@@ -141,8 +141,8 @@ namespace server.Controllers
         //     }
         // }
 
-        [HttpGet("{userId:int}")]
-        public async Task<IActionResult> Get([FromRoute] int userId)
+        [HttpGet("all/{userId:int}")]
+        public async Task<IActionResult> GetClassByUserId([FromRoute] int userId)
         {
             try
             {
@@ -151,7 +151,6 @@ namespace server.Controllers
                 //get hocSinhId
                 var student = await _studentRepo.GetHocSinhIdAsync(userId);
 
-                // not exists
                 if (teacher == null && student != null)
                 {
                     //get lopId
@@ -202,6 +201,20 @@ namespace server.Controllers
                 }
 
                 return NotFound();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetClassById([FromRoute] int id)
+        {
+            try
+            {
+                var classes_detail = await _classRepo.GetByIdAsync(id);
+                return Ok(classes_detail);
             }
             catch (Exception e)
             {

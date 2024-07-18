@@ -41,5 +41,10 @@ namespace server.Repository
             .ToListAsync();
             return lopHocs.Cast<LopHoc?>().ToList();
         }
+
+        public async Task<LopHoc?> GetByIdAsync(int id)
+        {
+            return await _context.LopHocs.FirstOrDefaultAsync(i => i.id == id);
+        }
     }
 }
