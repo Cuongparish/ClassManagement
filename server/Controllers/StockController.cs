@@ -46,9 +46,9 @@ namespace server.Controllers
         [Authorize]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            Console.WriteLine($"Token: {token}");
             var stocks = await _stockRepo.GetByIdAsync(id);
-            var userClaims = User.Claims;
-            Console.WriteLine(userClaims);
             if (stocks == null)
             {
                 return NotFound();
