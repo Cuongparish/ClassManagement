@@ -46,5 +46,40 @@ namespace server.Service
 
             return tokenHandler.WriteToken(token);
         }
+        public ClaimsPrincipal DecodeToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = _config["JWT:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _config["JWT:Audience"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _key,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+                // Log all claims for debugging
+                var claims = principal.Claims.Select(c => new { c.Type, c.Value }).ToList();
+                Console.WriteLine("00000000000000000000000000");
+                Console.WriteLine($"Claim Type: {claims[0].Type}, Claim Value: {claims[0].Value}");
+                // foreach (var claim in claims)
+                // {
+                //     Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+                // }
+                return principal;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Token validation failed: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

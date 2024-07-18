@@ -12,6 +12,8 @@ using server.Models;
 using server.Controllers;
 using server.Data;
 using server.Mappers;
+using server.Dtos.Auth;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace server.Controllers
 {
@@ -131,5 +133,26 @@ namespace server.Controllers
                 return StatusCode(500, e);
             }
         }
+        [HttpPost("decode")]
+        public IActionResult Decode([FromBody] TokenDto tokenDto)
+        {
+            var principal = _tokenService.DecodeToken(tokenDto.token_code);
+            if (principal != null)
+            {
+                var emailClaim = principal.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+                var usernameClaim = principal.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")?.Value;
+
+                if (emailClaim == null || usernameClaim == null)
+                {
+                    return BadRequest("Claims not found");
+                }
+
+                return Ok(new { email = emailClaim, username = usernameClaim });
+            }
+
+            return BadRequest("Invalid token");
+        }
+
+
     }
 }
