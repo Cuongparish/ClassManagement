@@ -20,11 +20,13 @@ namespace server.Controllers
         private readonly IClassRepository _classRepo;
         private readonly ITeacherRepository _teacherRepo;
         private readonly IStudentRepository _studentRepo;
-        public ClassController(ApplicationDBContext context, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
+        private readonly IUserRepository _userRepo;
+        public ClassController(ApplicationDBContext context, IUserRepository userRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
         {
             _classRepo = classRepo;
             _teacherRepo = teacherRepo;
             _studentRepo = studentRepo;
+            _userRepo = userRepo;
             _context = context;
         }
 
@@ -215,6 +217,41 @@ namespace server.Controllers
             {
                 var classes_detail = await _classRepo.GetByIdAsync(id);
                 return Ok(classes_detail);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("/member/{lopId:int}")]
+        public async Task<IActionResult> GetClassByLopId([FromRoute] int lopId)
+        {
+            try
+            {
+                // get id teacher
+                var teacher = await _teacherRepo.GetAllGiaoVienIdAsync(lopId);
+                var teacherIds = teacher.Select(t => t.giaoVienId).ToArray();
+                // get id user
+                var user1 = await _teacherRepo.GetUserIdAsync(teacherIds);
+                var userIds1 = user1.Select(t => t.userId).ToArray();
+                // get infor user in class (teacher)
+                var user_infor1 = await _userRepo.GetByUserIdAsync(userIds1);
+                // get id student
+                var student = await _studentRepo.GetAllHocSinhIdAsync(lopId);
+                var studentIds = student.Select(t => t.hocSinhId).ToArray();
+                // get id user
+                var user2 = await _studentRepo.GetUserIdAsync(studentIds);
+                var userIds2 = user2.Select(t => t.userId).ToArray();
+                // get infor user in class (student)
+                var user_infor2 = await _userRepo.GetByUserIdAsync(userIds2);
+
+                var result = new
+                {
+                    teacher = user_infor1,
+                    student = user_infor2
+                };
+                return Ok(result);
             }
             catch (Exception e)
             {

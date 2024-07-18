@@ -11,5 +11,6 @@ namespace server.Interfaces
 
         Task<User> CreateAsync(User userModel);
         Task<User?> GetByUsernameAsync(string email);
+        Task<List<User?>> GetByUserIdAsync(int[] userIds);
     }
 }

@@ -13,6 +13,8 @@ namespace server.Interfaces
         Task<HocSinhLopHoc> CreateAsync(HocSinhLopHoc hocSinhLopHocModel);
         Task<List<HocSinhLopHoc>> GetLopIdAsync(int hocSinhId);
         Task<HocSinh?> GetHocSinhIdAsync(int userId);
+        Task<List<HocSinhLopHoc>> GetAllHocSinhIdAsync(int lopId);
+        Task<List<HocSinh?>> GetUserIdAsync(int[] hocsinhIds);
 
     }
 }

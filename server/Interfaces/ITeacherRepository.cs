@@ -13,5 +13,7 @@ namespace server.Interfaces
         Task<GiaoVienLopHoc> CreateAsync(GiaoVienLopHoc giaoVienLopHocModel);
         Task<List<GiaoVienLopHoc>> GetLopIdAsync(int giaoVienId);
         Task<GiaoVien?> GetGiaoVienIdAsync(int userId);
+        Task<List<GiaoVienLopHoc>> GetAllGiaoVienIdAsync(int lopId);
+        Task<List<GiaoVien?>> GetUserIdAsync(int[] giaoVienIds);
     }
 }

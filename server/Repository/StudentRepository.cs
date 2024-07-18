@@ -35,6 +35,20 @@ namespace server.Repository
             return student;
         }
 
+        public async Task<HocSinh?> GetHocSinhIdAsync(int userId)
+        {
+            var result = await _context.HocSinhs.FirstOrDefaultAsync(s => s.userId == userId);
+            return result;
+        }
+
+        public async Task<List<HocSinh?>> GetUserIdAsync(int[] hocsinhIds)
+        {
+            var users = await _context.HocSinhs
+            .Where(s => hocsinhIds.Contains(s.id))
+            .ToListAsync();
+            return users.Cast<HocSinh?>().ToList();
+        }
+
         public async Task<HocSinhLopHoc> CreateAsync(HocSinhLopHoc hocSinhLopHocModel)
         {
             await _context.HocSinhLopHocs.AddAsync(hocSinhLopHocModel);
@@ -50,10 +64,13 @@ namespace server.Repository
             return await result.ToListAsync();
         }
 
-        public async Task<HocSinh?> GetHocSinhIdAsync(int userId)
+        public async Task<List<HocSinhLopHoc>> GetAllHocSinhIdAsync(int lopId)
         {
-            var result = await _context.HocSinhs.FirstOrDefaultAsync(s => s.userId == userId);
-            return result;
+            var result = _context.HocSinhLopHocs.AsQueryable();
+            result = result.Where(s => s.lopId == lopId);
+            return await result.ToListAsync();
         }
+
+
     }
 }

@@ -33,5 +33,13 @@ namespace server.Repository
             }
             return existingStock;
         }
+
+        public async Task<List<User?>> GetByUserIdAsync(int[] userIds)
+        {
+            var users = await _context.Users
+            .Where(s => userIds.Contains(s.id))
+            .ToListAsync();
+            return users.Cast<User?>().ToList();
+        }
     }
 }
