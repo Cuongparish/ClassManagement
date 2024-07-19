@@ -20,10 +20,12 @@ namespace server.Controllers
     {
         private readonly ApplicationDBContext _context;
         private readonly IStockRepository _stockRepo;
-        public StockController(ApplicationDBContext context, IStockRepository stockRepo)
+        private readonly IMailService _mailService;
+        public StockController(ApplicationDBContext context, IStockRepository stockRepo, IMailService mailService)
         {
             _stockRepo = stockRepo;
             _context = context;
+            _mailService = mailService;
         }
 
         [HttpGet]
@@ -104,6 +106,20 @@ namespace server.Controllers
             return NoContent();
         }
 
+        [HttpPost("send")]
+        public async Task<IActionResult> SendEmail([FromBody] EmailDto emailDto)
+        {
+            await _mailService.SendEmailAsync(emailDto.ToEmail, emailDto.Subject, emailDto.Body);
+            return Ok("Email sent successfully!");
+        }
+
 
     }
+}
+
+public class EmailDto
+{
+    public string ToEmail { get; set; }
+    public string Subject { get; set; }
+    public string Body { get; set; }
 }
