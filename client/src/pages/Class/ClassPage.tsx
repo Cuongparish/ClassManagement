@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
-import { News } from "./SubPage"; // Adjust the import path as necessary
-
+import { News, ReviewPage } from "./SubPage";
 
 const { TabPane } = Tabs;
 
@@ -14,6 +13,11 @@ const ClassPage = (): React.ReactElement => {
   };
 
   const UserRoleInClass = "Teacher"; // Example role
+
+  const user = {
+    idUser: 1,
+    FullName: "Nguyễn Văn A"
+  };
 
   return (
     <div className="w-100 h-100 tab-menu">
@@ -48,7 +52,7 @@ const ClassPage = (): React.ReactElement => {
 
         {/* Màn hình trao đổi */}
         <TabPane tab="Trao đổi" key="communication" className="h-100 bg-body-white p-2">
-          {DetailClass && <div>List Review Component</div>}
+          {DetailClass && <ReviewPage user={user} />}
         </TabPane>
       </Tabs>
     </div>

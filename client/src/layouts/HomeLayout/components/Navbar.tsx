@@ -4,15 +4,16 @@ import { Dropdown, Layout, Menu } from 'antd';
 import { CiCirclePlus } from "react-icons/ci";
 import { VscBell } from "react-icons/vsc";
 import { HiOutlineUserCircle } from "react-icons/hi2";
-// import { VscBellDot } from "react-icons/vsc";
+import { useNavigate } from 'react-router-dom';
 
 import "../../../App.css"
 
-
 const { Header } = Layout;
 
-
 const Navbar: React.FC = () => {
+    const navigate = useNavigate(); 
+
+
     const dropdownStyle = {
         width: '200px',
         padding: '10px',
@@ -52,11 +53,11 @@ const Navbar: React.FC = () => {
             }}
             className='menu-top justify-between'
         >
-            <div className='flex'>
+            <div className='flex items-center cursor-pointer' onClick={() => navigate('/home')}>
                 <img
                     src={"/images/logo.png"}
                     className="inline w-12 h-12 mx-3"
-                    alt=""
+                    alt="Logo"
                 />
                 <h3 className="text-white text-center text-xl mt-2">Grade Management</h3>
             </div>
