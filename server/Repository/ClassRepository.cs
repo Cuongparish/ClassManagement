@@ -46,5 +46,10 @@ namespace server.Repository
         {
             return await _context.LopHocs.FirstOrDefaultAsync(i => i.id == id);
         }
+
+        public async Task<LopHoc?> GetByMaLopAsync(string maLop)
+        {
+            return await _context.LopHocs.FirstOrDefaultAsync(i => i.maLop == maLop);
+        }
     }
 }

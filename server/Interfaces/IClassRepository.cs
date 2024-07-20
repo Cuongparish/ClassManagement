@@ -11,5 +11,6 @@ namespace server.Interfaces
         Task<LopHoc> CreateAsync(LopHoc classModel);
         Task<List<LopHoc?>> GetByIdAsync(int[] ids);
         Task<LopHoc?> GetByIdAsync(int id);
+        Task<LopHoc?> GetByMaLopAsync(string maLop);
     }
 }

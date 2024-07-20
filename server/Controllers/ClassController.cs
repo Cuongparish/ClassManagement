@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Data;
 using server.Dtos.Class;
+using server.Dtos.Student;
 using server.Dtos.Teacher;
+using server.Helpers;
 using server.Interfaces;
 using server.Mappers;
+using server.Service;
 
 namespace server.Controllers
 {
@@ -21,12 +25,14 @@ namespace server.Controllers
         private readonly ITeacherRepository _teacherRepo;
         private readonly IStudentRepository _studentRepo;
         private readonly IUserRepository _userRepo;
-        public ClassController(ApplicationDBContext context, IUserRepository userRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
+        private readonly ITokenService _tokenService;
+        public ClassController(ApplicationDBContext context, ITokenService tokenService, IUserRepository userRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
         {
             _classRepo = classRepo;
             _teacherRepo = teacherRepo;
             _studentRepo = studentRepo;
             _userRepo = userRepo;
+            _tokenService = tokenService;
             _context = context;
         }
 
@@ -252,6 +258,96 @@ namespace server.Controllers
                     student = user_infor2
                 };
                 return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpPost]
+        // [HttpGet("{maLop}")]
+        [Authorize]
+        // public async Task<IActionResult> GetClassById([FromRoute] string maLop, [FromQuery] string role)
+        public async Task<IActionResult> addUserinClass([FromBody] dynamic data)
+        {
+            try
+            {
+                //get userId
+                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last().ToString();
+
+                var principal = _tokenService.DecodeToken(token);
+                if (principal == null)
+                {
+                    return BadRequest("Claims not found");
+                }
+                var emailClaim = principal.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
+                var user = await _userRepo.GetByUsernameAsync(emailClaim);
+
+                // get lopId
+                var classes = await _classRepo.GetByMaLopAsync(data.maLop);
+
+                if (data.role == "gv")
+                {
+                    //check exists teacher in table GiaoVien
+                    var existingTeacher = await _teacherRepo.IsExistsAsync(user.id);
+
+                    //not exists
+                    if (existingTeacher == null)
+                    {
+                        //add into table GiaoVien
+                        var teacher = new CreateTeacherRequestDto
+                        {
+                            userId = user.id,
+                        };
+                        var teacherModel = teacher.ToTeacherFromCreateDTO();
+                        var resultTeacher = await _teacherRepo.CreateAsync(teacherModel);
+
+                        //add into table GiaoVienLopHoc
+                        var teacherClass = new CreateTeacherClassRequestDto
+                        {
+                            lopId = classes.id,
+                            giaoVienId = resultTeacher.id,
+                        };
+                        var teacherClassModel = teacherClass.ToTeacherClassFromCreateDTO();
+                        await _teacherRepo.CreateAsync(teacherClassModel);
+                    }
+                    //exists
+                    //add into table GiaoVienLopHoc
+                    var teacherClass1 = new CreateTeacherClassRequestDto
+                    {
+                        lopId = classes.id,
+                        giaoVienId = existingTeacher.id,
+                    };
+                    var teacherClassModel1 = teacherClass1.ToTeacherClassFromCreateDTO();
+                    await _teacherRepo.CreateAsync(teacherClassModel1);
+
+                }
+
+                if (data.role == "hs")
+                {
+                    var student = await _studentRepo.GetHocSinhIdAsync(user.id);
+                    if (student == null)
+                    {
+                        //add into table HocSinh
+                        var student1 = new CreateStudentRequestDto
+                        {
+                            userId = user.id,
+                        };
+                        var studentModel = student1.ToStudentFromCreateDTO();
+                        await _studentRepo.CreateAsync(studentModel);
+                    }
+                    var result_student = await _studentRepo.GetHocSinhIdAsync(user.id);
+                    //add into table HocSinhLopHoc
+                    var studentClass1 = new CreateStudentClassRequestDto
+                    {
+                        lopId = classes.id,
+                        hocSinhId = result_student.id,
+                    };
+                    var studentClassModel1 = studentClass1.ToStudentClassFromCreateDTO();
+                    await _studentRepo.CreateAsync(studentClassModel1);
+                }
+                return Ok(data.role);
             }
             catch (Exception e)
             {

@@ -20,12 +20,6 @@ namespace server.Service
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             var smtpSettings = _config.GetSection("Smtp").Get<SmtpSettings>();
-            Console.WriteLine($"{smtpSettings.Username}");
-            Console.WriteLine($"{smtpSettings.Password}");
-
-
-            Console.WriteLine($"{smtpSettings.Username}");
-            Console.WriteLine($"{smtpSettings.Password}");
 
             using (var client = new SmtpClient(smtpSettings.Host, smtpSettings.Port))
             {

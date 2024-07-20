@@ -50,6 +50,7 @@ namespace server.Controllers
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             Console.WriteLine($"Token: {token}");
+
             var stocks = await _stockRepo.GetByIdAsync(id);
             if (stocks == null)
             {
