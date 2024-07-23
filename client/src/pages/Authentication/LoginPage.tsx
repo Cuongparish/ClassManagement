@@ -48,7 +48,7 @@ const LoginPage = (): React.ReactElement => {
                         </div>
                     </form>
 
-                    <a href="/ResetPW">
+                    <a href="/resetPW">
                         <p className='underline underline-offset-4 hover:text-blue-600 mb-5'>Having Issues with your Password?</p>
                     </a>
 
