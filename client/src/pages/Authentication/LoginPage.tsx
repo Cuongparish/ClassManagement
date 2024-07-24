@@ -2,13 +2,24 @@ import React from 'react';
 import LeftBanner from "./components/LeftBanner";
 import { PrimaryButton, GoogleButton, FaceBookButton } from "../../components/Button";
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronLeft } from "react-icons/fa";
 import { Input } from 'antd';
 
 import "../../App.css";
 
 const LoginPage = (): React.ReactElement => {
+    const navigate = useNavigate();
+    // const location = useLocation();
+  
+    // const from = location.state?.from?.pathname || "/home";
+
+    const handleLogin = () => {
+        // navigate(from, { replace: true });
+        navigate(`/home`);
+        // window.location.reload();
+      };
+
     return (
         <div className="flex">
             <div className="left-banner h-screen w-1/3">
@@ -44,7 +55,7 @@ const LoginPage = (): React.ReactElement => {
                         <Input.Password placeholder='Password' className='w-full border-2 border-indigo-500/75 hover:border-indigo-500 focus:border-indigo-500 mb-5' />
 
                         <div className='text-center mb-3'>
-                            <PrimaryButton name='Login' />
+                            <PrimaryButton name='Login' onClick={handleLogin}/>
                         </div>
                     </form>
 

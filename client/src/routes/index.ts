@@ -22,6 +22,7 @@ const routes: RouteItem[] = [
   { path: "/login", page: Authentication.LoginPage, layout: EmptyLayout },
   { path: "/signup", page: Authentication.SignupPage, layout: EmptyLayout },
   { path: "/resetPW", page: Authentication.ResetPasswordPage, layout: EmptyLayout },
+  { path: "/join/class", page: Authentication.JoinClassPage, layout: EmptyLayout },
 
   {path: "/home", page: Home.HomePage, layout: HomeLayout},
   {path: "/profile", page: Home.ProfilePage, layout: HomeLayout},
