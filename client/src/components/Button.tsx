@@ -81,4 +81,61 @@ const FaceBookButton = (prop: ButtonProp) => {
 
 }
 
-export { PrimaryButton, GoogleButton, FaceBookButton };
+
+const UploadButton = (prop: ButtonProp) => {
+    const colors = ['#1D72E8', '#0D47A1'];
+
+    const getHoverColors = (colors: string[]) =>
+        colors.map((color) => new TinyColor(color).lighten(5).toString());
+    const getActiveColors = (colors: string[]) =>
+        colors.map((color) => new TinyColor(color).darken(5).toString());
+
+    return (
+        <ConfigProvider
+            theme={{
+                components: {
+                    Button: {
+                        colorPrimary: `linear-gradient(135deg, ${colors.join(', ')})`,
+                        colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors).join(', ')})`,
+                        colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors).join(', ')})`,
+                        lineWidth: 0,
+                    },
+                },
+            }}
+        >
+            <Button type="primary" className={`${prop.className}`} onClick={prop.onClick}>
+                {prop.name}
+            </Button>
+        </ConfigProvider>
+    );
+};
+
+const DownloadButton = (prop: ButtonProp) => {
+    const colors = ['#28A745', '#218838'];
+
+    const getHoverColors = (colors: string[]) =>
+        colors.map((color) => new TinyColor(color).lighten(5).toString());
+    const getActiveColors = (colors: string[]) =>
+        colors.map((color) => new TinyColor(color).darken(5).toString());
+
+    return (
+        <ConfigProvider
+            theme={{
+                components: {
+                    Button: {
+                        colorPrimary: `linear-gradient(135deg, ${colors.join(', ')})`,
+                        colorPrimaryHover: `linear-gradient(135deg, ${getHoverColors(colors).join(', ')})`,
+                        colorPrimaryActive: `linear-gradient(135deg, ${getActiveColors(colors).join(', ')})`,
+                        lineWidth: 0,
+                    },
+                },
+            }}
+        >
+            <Button type="primary" className={`${prop.className}`} onClick={prop.onClick}>
+                {prop.name}
+            </Button>
+        </ConfigProvider>
+    );
+};
+
+export { PrimaryButton, GoogleButton, FaceBookButton, UploadButton, DownloadButton };

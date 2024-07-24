@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
-import { News, ReviewPage } from "./SubPage";
+import { News, ReviewPage, StudentPeoplePage, TeacherPeoplePage } from "./SubPage";
 
 const { TabPane } = Tabs;
 
@@ -9,14 +9,33 @@ const ClassPage = (): React.ReactElement => {
 
   const DetailClass = {
     MaLop: "ABC123",
+    idLop: "123456",
     TenLop: "Lớp học React",
   };
 
-  const UserRoleInClass = "Teacher"; // Example role
+  type Role = "Student" | "Teacher" | "Admin";
+
+  const UserRoleInClass: Role = "Teacher" ;
 
   const user = {
     idUser: 1,
-    FullName: "Nguyễn Văn A"
+    FullName: "Nguyễn Văn A",
+  };
+
+  const teachers = [
+    { FullName: "Giáo viên 1" },
+    { FullName: "Giáo viên 2" },
+    { FullName: "Giáo viên 3" },
+  ];
+
+  const students = [
+    { FullName: "Sinh viên 1", StudentId: "SV001" },
+    { FullName: "Sinh viên 2", StudentId: "SV002" },
+    { FullName: "Sinh viên 3", StudentId: "SV003" },
+  ];
+
+  const isTeacher = (role: Role): boolean => {
+    return role === "Teacher";
   };
 
   return (
@@ -30,26 +49,21 @@ const ClassPage = (): React.ReactElement => {
         <TabPane tab="Bảng tin" key="news">
           <News DetailClass={DetailClass} />
         </TabPane>
-
-        {/* Màn hình bài tập */}
-        <TabPane tab="Bài tập trên lớp" key="homework">
-          <div>Bài tập trên lớp</div>
-        </TabPane>
-
+  
         {/* Màn hình mọi người */}
         <TabPane tab="Mọi người" key="members">
-          {UserRoleInClass === "Teacher" ? (
-            <div>Teacher's view of People</div>
+          {isTeacher(UserRoleInClass) ? (
+            <TeacherPeoplePage DetailClass={DetailClass} TeacherInClass={teachers} StudentInClass={students} />
           ) : (
-            <div>Student's view of People</div>
+            <StudentPeoplePage TeacherInClass={teachers} StudentInClass={students} />
           )}
         </TabPane>
-
+  
         {/* Màn hình điểm */}
         <TabPane tab="Điểm" key="score">
           <div>Điểm</div>
         </TabPane>
-
+  
         {/* Màn hình trao đổi */}
         <TabPane tab="Trao đổi" key="communication" className="h-100 bg-body-white p-2">
           {DetailClass && <ReviewPage user={user} />}

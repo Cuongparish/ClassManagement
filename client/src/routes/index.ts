@@ -21,9 +21,13 @@ const routes: RouteItem[] = [
   { path: "/introduction", page: Authentication.LandingPage, layout: EmptyLayout },
   { path: "/login", page: Authentication.LoginPage, layout: EmptyLayout },
   { path: "/signup", page: Authentication.SignupPage, layout: EmptyLayout },
+  { path: "/resetPW", page: Authentication.ResetPasswordPage, layout: EmptyLayout },
+  { path: "/join/class", page: Authentication.JoinClassPage, layout: EmptyLayout },
 
   {path: "/home", page: Home.HomePage, layout: HomeLayout},
-  {path: "/class", page: Class.ClassPage, layout: ClassLayout}
+  {path: "/profile", page: Home.ProfilePage, layout: HomeLayout},
+
+  {path: "/class", page: Class.ClassPage, layout: ClassLayout},
 ];
 
 export default routes;
