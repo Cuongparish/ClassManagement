@@ -133,6 +133,35 @@ namespace server.Controllers
                 return StatusCode(500, e);
             }
         }
+
+        [HttpPost("resetpw")]
+        public async Task<IActionResult> ResetPW(string email)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == email.ToLower());
+
+            if (user == null) return Unauthorized("Invalid username!");
+
+            // var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+            // if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+
+            var user1 = await _userRepo.GetByUsernameAsync(user.UserName);
+            var userModel = user1.ToUserDto();
+
+            return Ok(
+                new NewUserDto
+                {
+                    id = userModel.id,
+                    email = user.Email,
+                    pw = user.PasswordHash,
+                    fullName = userModel.fullName,
+                    dob = userModel.dob,
+                    sex = userModel.sex,
+                    phone = userModel.phone,
+                }
+            );
+        }
+
         [HttpPost("decode")]
         public IActionResult Decode([FromBody] TokenDto tokenDto)
         {
