@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Input, Card, Typography } from "antd";
+import { useUser } from "../../../../utils/UserContext";
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -9,13 +10,12 @@ interface DetailReviewProps {
     idPhucKhao: number;
     TenCotDiem: string;
   };
-  user: {
-    FullName: string;
-  };
   onClick: () => void;
 }
 
-const DetailReview: React.FC<DetailReviewProps> = ({ reviewClicked, user, onClick }) => {
+const DetailReview: React.FC<DetailReviewProps> = ({ reviewClicked, onClick }) => {
+  const { user } = useUser();
+
   const [Replies, setReplies] = useState([
     {
       FullName: "Mai Anh Tuấn",
@@ -30,13 +30,15 @@ const DetailReview: React.FC<DetailReviewProps> = ({ reviewClicked, user, onClic
   };
 
   const handleSendReply = () => {
-    const newReply = {
-      FullName: user.FullName,
-      ThoiGian: new Date(),
-      TraoDoi: Content,
-    };
-    setReplies([...Replies, newReply]);
-    setContent("");
+    if(user) {
+      const newReply = {
+        FullName: user.FullName,
+        ThoiGian: new Date(),
+        TraoDoi: Content,
+      };
+      setReplies([...Replies, newReply]);
+      setContent("");
+    }
   };
 
   return (
@@ -50,7 +52,7 @@ const DetailReview: React.FC<DetailReviewProps> = ({ reviewClicked, user, onClic
         <Title level={4} className="text-blue-500">
           Phúc khảo cột điểm {reviewClicked.TenCotDiem}
         </Title>
-        <div className="mb-3">Sinh viên: {user.FullName}</div>
+        <div className="mb-3">Sinh viên: {user?.FullName}</div>
         <TextArea
           className="mb-2 border border-slate-400"
           value="Lý do phúc khảo"

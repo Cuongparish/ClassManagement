@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Review from "./components/Review";
 import DetailReview from "./components/DetailReview";
+import { useUser } from "../../../utils/UserContext";
 
 interface ReviewData {
   idPhucKhao: number;
@@ -9,14 +10,9 @@ interface ReviewData {
   FullName: string;
 }
 
-interface ReviewPageProps {
-  user: {
-    idUser: number;
-    FullName: string;
-  };
-}
+const ReviewPage: React.FC = () => {
+  const { user } = useUser();
 
-const ReviewPage: React.FC<ReviewPageProps> = ({ user }) => {
   const [ListReviewData, setListReviewData] = useState<ReviewData[]>([]);
   const [ReviewClicked, setReviewClicked] = useState<ReviewData | null>(null);
   const [showDetail, setShowDetail] = useState(false);
@@ -58,7 +54,7 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ user }) => {
   return (
     <>
       {showDetail && ReviewClicked ? (
-        <DetailReview onClick={handleHideDetail} reviewClicked={ReviewClicked} user={user} />
+        <DetailReview onClick={handleHideDetail} reviewClicked={ReviewClicked} />
       ) : (
         <>
           {ListReviewData.map((review) => (

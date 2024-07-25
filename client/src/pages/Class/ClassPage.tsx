@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
 import { News, ReviewPage, StudentPeoplePage, TeacherPeoplePage } from "./SubPage";
+import StudentScoreTablePage from "./SubPage/student/StudentScoreTablePage";
+// import { useUser } from "../../utils/UserContext";
 
 const { TabPane } = Tabs;
 
 const ClassPage = (): React.ReactElement => {
   const [tab, setTab] = useState<string>("news");
+
+  // const { user } = useUser();
 
   const DetailClass = {
     MaLop: "ABC123",
@@ -15,12 +19,7 @@ const ClassPage = (): React.ReactElement => {
 
   type Role = "Student" | "Teacher" | "Admin";
 
-  const UserRoleInClass: Role = "Teacher" ;
-
-  const user = {
-    idUser: 1,
-    FullName: "Nguyễn Văn A",
-  };
+  const UserRoleInClass: Role = "Teacher";
 
   const teachers = [
     { FullName: "Giáo viên 1" },
@@ -49,7 +48,7 @@ const ClassPage = (): React.ReactElement => {
         <TabPane tab="Bảng tin" key="news">
           <News DetailClass={DetailClass} />
         </TabPane>
-  
+
         {/* Màn hình mọi người */}
         <TabPane tab="Mọi người" key="members">
           {isTeacher(UserRoleInClass) ? (
@@ -58,15 +57,15 @@ const ClassPage = (): React.ReactElement => {
             <StudentPeoplePage TeacherInClass={teachers} StudentInClass={students} />
           )}
         </TabPane>
-  
+
         {/* Màn hình điểm */}
         <TabPane tab="Điểm" key="score">
-          <div>Điểm</div>
+          <StudentScoreTablePage />
         </TabPane>
-  
+
         {/* Màn hình trao đổi */}
         <TabPane tab="Trao đổi" key="communication" className="h-100 bg-body-white p-2">
-          {DetailClass && <ReviewPage user={user} />}
+          {DetailClass && <ReviewPage />}
         </TabPane>
       </Tabs>
     </div>
