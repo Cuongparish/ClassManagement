@@ -25,15 +25,17 @@ namespace server.Controllers
         private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signinManager;
         private readonly IUserRepository _userRepo;
+        private readonly IMailService _mailRepo;
         private readonly ApplicationDBContext _context;
         // , ITokenService tokenService, SignInManager<AppUser> signInManager
-        public AccountController(ApplicationDBContext context, IUserRepository userRepo, UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
+        public AccountController(ApplicationDBContext context, IUserRepository userRepo, IMailService mailRepo, UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
         {
             _userRepo = userRepo;
             _context = context;
             _userManager = userManager;
             _tokenService = tokenService;
             _signinManager = signInManager;
+            _mailRepo = mailRepo;
         }
 
         [HttpPost("login")]
@@ -46,6 +48,7 @@ namespace server.Controllers
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
             if (user == null) return Unauthorized("Invalid username!");
+
 
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -135,16 +138,22 @@ namespace server.Controllers
         }
 
         [HttpPost("resetpw")]
-        public async Task<IActionResult> ResetPW(string email)
+        public async Task<IActionResult> ResetPW([FromBody] string email)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == email.ToLower());
 
             if (user == null) return Unauthorized("Invalid username!");
-
-            // var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-
-            // if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
-
+            var appUser = new AppUser
+            {
+                UserName = email,
+                Email = email
+            };
+            string newPw = "User@123456";
+            string subject = "Bạn đã reset mật khẩu";
+            string body = $"Mật khẩu mới được đặt lại của bạn là : {newPw}";
+            await _mailRepo.SendEmailAsync(email, subject, body);
+            await _userManager.RemovePasswordAsync(appUser);
+            await _userManager.AddPasswordAsync(appUser, newPw);
             var user1 = await _userRepo.GetByUsernameAsync(user.UserName);
             var userModel = user1.ToUserDto();
 
@@ -163,15 +172,19 @@ namespace server.Controllers
         }
 
         [HttpPost("changepw")]
-        public async Task<IActionResult> ChangePW(string email)
+        public async Task<IActionResult> ChangePW([FromBody] ChangePwDto changePwDto)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == email.ToLower());
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == changePwDto.Email.ToLower());
 
             if (user == null) return Unauthorized("Invalid username!");
 
-            // var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var appUser = new AppUser
+            {
+                UserName = changePwDto.Email,
+                Email = changePwDto.Email
 
-            // if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+            };
+            var updateUser = await _userManager.ChangePasswordAsync(appUser, changePwDto.OldPw, changePwDto.NewPw);
 
             var user1 = await _userRepo.GetByUsernameAsync(user.UserName);
             var userModel = user1.ToUserDto();
