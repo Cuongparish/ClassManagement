@@ -12,6 +12,8 @@ using server.Mappers;
 
 namespace server.Controllers
 {
+    [Route("api/grade")]
+    [ApiController]
     public class GradeController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
@@ -29,8 +31,9 @@ namespace server.Controllers
             _gradeRepo = gradeRepo;
             _context = context;
         }
+
         // hiển thị ds thành phần điểm + tổng % điểm 
-        [HttpGet("grade/listPercentScore/{lopId:int}")]
+        [HttpGet("listPercentScore/{lopId:int}")]
         [Authorize]
         public async Task<IActionResult> getPercentScore_inClass([FromRoute] int lopId)
         {
@@ -58,7 +61,7 @@ namespace server.Controllers
         }
 
         // thêm thành phần điểm
-        [HttpPost]
+        [HttpPost("addPercentScore")]
         [Authorize]
         public async Task<IActionResult> addPercentScore_inClass([FromBody] CreateGradeRequestDto gradeDto)
         {
@@ -66,7 +69,7 @@ namespace server.Controllers
             {
                 var gradeModel = gradeDto.ToGradeFromCreateDTO();
                 var grade = await _gradeRepo.CreateAsync(gradeModel);
-                return Ok(grade);
+                return Ok(grade.ToGradeDto());
             }
             catch (Exception e)
             {
@@ -75,14 +78,14 @@ namespace server.Controllers
         }
 
         // xóa thành phần điểm
-        [HttpGet("{id:int}")]
+        [HttpGet("delPercentScore/{id:int}")]
         [Authorize]
         public async Task<IActionResult> delPercentScore_inClass([FromRoute] int id)
         {
             try
             {
                 var grade = await _gradeRepo.DelAsync(id);
-                return Ok(grade);
+                return Ok(grade.ToGradeDto());
             }
             catch (Exception e)
             {
@@ -91,14 +94,14 @@ namespace server.Controllers
         }
 
         //sửa thành phần điểm
-        [HttpPost]
+        [HttpPost("updatePercentScore")]
         [Authorize]
         public async Task<IActionResult> updatePercentScore_inClass([FromBody] UpdateGradeRequestDto updateGrade)
         {
             try
             {
                 var grade = await _gradeRepo.UpdateAsync(updateGrade);
-                return Ok(grade);
+                return Ok(grade.ToGradeDto());
             }
             catch (Exception e)
             {

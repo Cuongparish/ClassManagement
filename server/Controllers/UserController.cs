@@ -22,16 +22,16 @@ namespace server.Controllers
             _context = context;
         }
 
-        [HttpGet()]
-        public async Task<IActionResult> GetByUsernameAsync()
+        // manage profile
+        [HttpPost]
+        public async Task<IActionResult> GetByUsernameAsync([FromBody] string email)
         {
-            Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1");
-            var stocks = await _userRepo.GetByUsernameAsync("cuong1@gmail.com");
-            if (stocks == null)
+            var user = await _userRepo.GetByUsernameAsync(email);
+            if (user == null)
             {
                 return NotFound();
             }
-            return Ok(stocks.ToUserDto());
+            return Ok(user.ToUserDto());
         }
     }
 }

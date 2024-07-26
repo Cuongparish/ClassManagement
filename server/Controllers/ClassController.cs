@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using server.Data;
 using server.Dtos.Class;
 using server.Dtos.Student;
@@ -38,6 +39,7 @@ namespace server.Controllers
 
         [HttpPost]
         [Route("{userId:int}")]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateClassRequestDto classDto, [FromRoute] int userId)
         {
             try
@@ -150,6 +152,7 @@ namespace server.Controllers
         // }
 
         [HttpGet("all/{userId:int}")]
+        [Authorize]
         public async Task<IActionResult> GetClassByUserId([FromRoute] int userId)
         {
             try
@@ -217,6 +220,7 @@ namespace server.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> GetClassById([FromRoute] int id)
         {
             try
@@ -355,96 +359,83 @@ namespace server.Controllers
             }
         }
 
-        [HttpPost]
-        // [HttpGet("{maLop}")]
-        [Authorize]
-        // public async Task<IActionResult> GetClassById([FromRoute] string maLop, [FromQuery] string role)
-        public async Task<IActionResult> addUserinClass([FromBody] dynamic data)
+
+        // xuất ds học sinh tên + mssv
+        [HttpGet("export")]
+        public async Task<IActionResult> Export()
         {
-            try
+
+            var students = new List<StudentDto>
             {
-                //get userId
-                var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last().ToString();
+                new StudentDto { id= 1, userId=2, studentId= 3 },
+                new StudentDto {  id=3, userId= 5, studentId= 6 }
+            };
 
-                var principal = _tokenService.DecodeToken(token);
-                if (principal == null)
-                {
-                    return BadRequest("Claims not found");
-                }
-                var emailClaim = principal.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
-                var user = await _userRepo.GetByUsernameAsync(emailClaim);
-
-                // get lopId
-                var classes = await _classRepo.GetByMaLopAsync(data.maLop);
-
-                if (data.role == "gv")
-                {
-                    //check exists teacher in table GiaoVien
-                    var existingTeacher = await _teacherRepo.IsExistsAsync(user.id);
-
-                    //not exists
-                    if (existingTeacher == null)
-                    {
-                        //add into table GiaoVien
-                        var teacher = new CreateTeacherRequestDto
-                        {
-                            userId = user.id,
-                        };
-                        var teacherModel = teacher.ToTeacherFromCreateDTO();
-                        var resultTeacher = await _teacherRepo.CreateAsync(teacherModel);
-
-                        //add into table GiaoVienLopHoc
-                        var teacherClass = new CreateTeacherClassRequestDto
-                        {
-                            lopId = classes.id,
-                            giaoVienId = resultTeacher.id,
-                        };
-                        var teacherClassModel = teacherClass.ToTeacherClassFromCreateDTO();
-                        await _teacherRepo.CreateAsync(teacherClassModel);
-                    }
-                    //exists
-                    //add into table GiaoVienLopHoc
-                    var teacherClass1 = new CreateTeacherClassRequestDto
-                    {
-                        lopId = classes.id,
-                        giaoVienId = existingTeacher.id,
-                    };
-                    var teacherClassModel1 = teacherClass1.ToTeacherClassFromCreateDTO();
-                    await _teacherRepo.CreateAsync(teacherClassModel1);
-
-                }
-
-                if (data.role == "hs")
-                {
-                    var student = await _studentRepo.GetHocSinhIdAsync(user.id);
-                    if (student == null)
-                    {
-                        //add into table HocSinh
-                        var student1 = new CreateStudentRequestDto
-                        {
-                            userId = user.id,
-                        };
-                        var studentModel = student1.ToStudentFromCreateDTO();
-                        await _studentRepo.CreateAsync(studentModel);
-                    }
-                    var result_student = await _studentRepo.GetHocSinhIdAsync(user.id);
-                    //add into table HocSinhLopHoc
-                    var studentClass1 = new CreateStudentClassRequestDto
-                    {
-                        lopId = classes.id,
-                        hocSinhId = result_student.id,
-                    };
-                    var studentClassModel1 = studentClass1.ToStudentClassFromCreateDTO();
-                    await _studentRepo.CreateAsync(studentClassModel1);
-                }
-                return Ok(data.role);
-            }
-            catch (Exception e)
+            var stream = new MemoryStream();
+            using (var package = new ExcelPackage(stream))
             {
-                return StatusCode(500, e);
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                // Tạo tiêu đề cho các cột
+                worksheet.Cells[1, 1].Value = "Id";
+                worksheet.Cells[1, 2].Value = "UserId";
+                worksheet.Cells[1, 3].Value = "StudentId";
+
+                // Điền dữ liệu vào các ô
+                for (int i = 0; i < students.Count; i++)
+                {
+                    worksheet.Cells[i + 2, 1].Value = students[i].id;
+                    worksheet.Cells[i + 2, 2].Value = students[i].userId;
+                    worksheet.Cells[i + 2, 3].Value = students[i].studentId;
+                }
+
+                package.Save();
             }
+
+            stream.Position = 0;
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = "students.xlsx";
+
+            return File(stream, contentType, fileName);
         }
 
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
 
+            var students = new List<StudentDto>();
+
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                stream.Position = 0;
+
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (var package = new ExcelPackage(stream))
+                {
+                    var worksheet = package.Workbook.Worksheets[0]; // Lấy worksheet đầu tiên
+                    int rowCount = worksheet.Dimension.Rows;       // Số hàng trong worksheet
+
+                    for (int row = 2; row <= rowCount; row++) // Bắt đầu từ hàng 2 để bỏ qua tiêu đề
+                    {
+                        var student = new StudentDto
+                        {
+                            id = int.Parse(worksheet.Cells[row, 1].Text),
+                            userId = int.Parse(worksheet.Cells[row, 2].Text),
+                            studentId = int.Parse(worksheet.Cells[row, 3].Text)
+                        };
+                        students.Add(student);
+                    }
+                }
+            }
+
+            // Xử lý dữ liệu từ file tải lên ở đây
+            // Ví dụ: lưu vào cơ sở dữ liệu, trả về danh sách sinh viên, v.v.
+            return Ok(students);
+        }
     }
 }
