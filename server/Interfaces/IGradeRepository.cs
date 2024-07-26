@@ -8,6 +8,15 @@ namespace server.Interfaces
 {
     public interface IGradeRepository
     {
+        public async Task<CotDiem> GetbyLopIdAsync(CotDiem gradeModel);
+
         Task<CotDiem> CreateAsync(CotDiem gradeModel);
+
+
+        Task<CotDiem> DelAsync(CotDiem gradeModel);
+
+
+        Task<CotDiem> UpdateAsync(CotDiem gradeModel);
+
     }
 }
