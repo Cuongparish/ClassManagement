@@ -34,36 +34,36 @@ interface State {
 
 const StudentScoreTablePage: React.FC = () => {
     const gradestructure: GradeStructure[] | null = [
-        {
-            idLop: "123456",
-            TenCotDiem: "Điểm giữa kỳ",
-            PhanTramDiem: 10,
-            AcpPhucKhao: 1,
-        },
-        {
-            idLop: "123456",
-            TenCotDiem: "Điểm cuối kỳ",
-            PhanTramDiem: 30,
-            AcpPhucKhao: 0,
-        },
-        {
-            idLop: "123456",
-            TenCotDiem: "Điểm bài tập",
-            PhanTramDiem: 20,
-            AcpPhucKhao: 1,
-        },
-        {
-            idLop: "123456",
-            TenCotDiem: "Điểm thuyết trình",
-            PhanTramDiem: 20,
-            AcpPhucKhao: 0,
-        },
-        {
-            idLop: "123456",
-            TenCotDiem: "Điểm tham gia",
-            PhanTramDiem: 20,
-            AcpPhucKhao: 1,
-        },
+        // {
+        //     idLop: "123456",
+        //     TenCotDiem: "Điểm giữa kỳ",
+        //     PhanTramDiem: 10,
+        //     AcpPhucKhao: 1,
+        // },
+        // {
+        //     idLop: "123456",
+        //     TenCotDiem: "Điểm cuối kỳ",
+        //     PhanTramDiem: 30,
+        //     AcpPhucKhao: 0,
+        // },
+        // {
+        //     idLop: "123456",
+        //     TenCotDiem: "Điểm bài tập",
+        //     PhanTramDiem: 20,
+        //     AcpPhucKhao: 1,
+        // },
+        // {
+        //     idLop: "123456",
+        //     TenCotDiem: "Điểm thuyết trình",
+        //     PhanTramDiem: 20,
+        //     AcpPhucKhao: 0,
+        // },
+        // {
+        //     idLop: "123456",
+        //     TenCotDiem: "Điểm tham gia",
+        //     PhanTramDiem: 20,
+        //     AcpPhucKhao: 1,
+        // },
     ];
 
     const { user } = useUser();
@@ -102,7 +102,7 @@ const StudentScoreTablePage: React.FC = () => {
             const total = state.gradeStructuresPublic.reduce((acc, { PhanTramDiem }) => acc + PhanTramDiem, 0);
             setState((prevState) => ({ ...prevState, totalPercent: total }));
         }
-    }, [state.gradeStructuresPublic, user]);
+    }, [state, state.gradeStructuresPublic, user]);
 
     const handleSendReview = async () => {
         // Here you can add your logic to send the review
@@ -256,7 +256,7 @@ const StudentScoreTablePage: React.FC = () => {
                     </Modal>
                 </>
             ) : (
-                <Row className="h-screen flex items-center justify-center">
+                <Row className="h-screen flex my-20 justify-center">
                     <Col className="flex flex-col items-center">
                         <img
                             src={"/images/score_table_student.png"}
@@ -266,7 +266,6 @@ const StudentScoreTablePage: React.FC = () => {
                         <h1 className="text-center text-3xl">Rất tiếc chưa có điểm</h1>
                     </Col>
                 </Row>
-
             )}
         </>
     );

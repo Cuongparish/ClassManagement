@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Tabs } from "antd";
 import { News, ReviewPage, StudentPeoplePage, TeacherPeoplePage } from "./SubPage";
 import StudentScoreTablePage from "./SubPage/student/StudentScoreTablePage";
+import TeacherScoreTablePage from "./SubPage/teacher/TeacherScoreTablePage";
 // import { useUser } from "../../utils/UserContext";
 
 const { TabPane } = Tabs;
@@ -17,7 +18,7 @@ const ClassPage = (): React.ReactElement => {
     TenLop: "Lớp học React",
   };
 
-  type Role = "Student" | "Teacher" | "Admin";
+  type Role = "Student" | "Teacher";
 
   const UserRoleInClass: Role = "Teacher";
 
@@ -60,7 +61,11 @@ const ClassPage = (): React.ReactElement => {
 
         {/* Màn hình điểm */}
         <TabPane tab="Điểm" key="score">
-          <StudentScoreTablePage />
+          {isTeacher(UserRoleInClass) ? (
+            <TeacherScoreTablePage />
+          ) : (
+            <StudentScoreTablePage />
+          )}
         </TabPane>
 
         {/* Màn hình trao đổi */}
