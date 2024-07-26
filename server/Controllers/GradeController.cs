@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using server.Data;
+using server.Dtos.Class;
+using server.Dtos.Grade;
 using server.Interfaces;
+using server.Mappers;
 
 namespace server.Controllers
 {
@@ -16,12 +19,14 @@ namespace server.Controllers
         private readonly ITeacherRepository _teacherRepo;
         private readonly IStudentRepository _studentRepo;
         private readonly IUserRepository _userRepo;
-        public GradeController(ApplicationDBContext context, IUserRepository userRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
+        private readonly IGradeRepository _gradeRepo;
+        public GradeController(ApplicationDBContext context, IUserRepository userRepo, IGradeRepository gradeRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
         {
             _classRepo = classRepo;
             _teacherRepo = teacherRepo;
             _studentRepo = studentRepo;
             _userRepo = userRepo;
+            _gradeRepo = gradeRepo;
             _context = context;
         }
         // hiển thị ds thành phần điểm + tổng % điểm 
@@ -31,8 +36,20 @@ namespace server.Controllers
         {
             try
             {
+                var grade = await _gradeRepo.GetbyLopIdAsync(lopId);
+                float sum = 0;
+                for (int i = 0; i < grade.Count; i++)
+                {
+                    sum += grade[i].phanTramDiem;
+                    // console.log(rows[i].PhanTramDiem);
+                }
 
-                return NotFound();
+                var result = new
+                {
+                    list_grade = grade,
+                    total = sum
+                };
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -41,14 +58,15 @@ namespace server.Controllers
         }
 
         // thêm thành phần điểm
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> addPercentScore_inClass([FromRoute] int lopId)
+        public async Task<IActionResult> addPercentScore_inClass([FromBody] CreateGradeRequestDto gradeDto)
         {
             try
             {
-
-                return NotFound();
+                var gradeModel = gradeDto.ToGradeFromCreateDTO();
+                var grade = await _gradeRepo.CreateAsync(gradeModel);
+                return Ok(grade);
             }
             catch (Exception e)
             {
@@ -57,14 +75,14 @@ namespace server.Controllers
         }
 
         // xóa thành phần điểm
-        [HttpGet]
+        [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<IActionResult> delPercentScore_inClass([FromRoute] int lopId)
+        public async Task<IActionResult> delPercentScore_inClass([FromRoute] int id)
         {
             try
             {
-
-                return NotFound();
+                var grade = await _gradeRepo.DelAsync(id);
+                return Ok(grade);
             }
             catch (Exception e)
             {
@@ -72,15 +90,15 @@ namespace server.Controllers
             }
         }
 
-        // sửa thành phần điểm
-        [HttpGet]
+        //sửa thành phần điểm
+        [HttpPost]
         [Authorize]
-        public async Task<IActionResult> updatePercentScore_inClass([FromRoute] int lopId)
+        public async Task<IActionResult> updatePercentScore_inClass([FromBody] UpdateGradeRequestDto updateGrade)
         {
             try
             {
-
-                return NotFound();
+                var grade = await _gradeRepo.UpdateAsync(updateGrade);
+                return Ok(grade);
             }
             catch (Exception e)
             {

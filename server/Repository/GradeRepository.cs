@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using server.Data;
 using server.Dtos.Grade;
 using server.Interfaces;
+using server.Mappers;
 using server.Models;
 
 namespace server.Repository
@@ -18,10 +19,10 @@ namespace server.Repository
             _context = context;
         }
 
-        public async Task<CotDiem?> GetbyLopIdAsync(int lopId)
+        public async Task<List<CotDiem?>> GetbyLopIdAsync(int lopId)
         {
             //get grade
-            var grade = await _context.CotDiems.FirstOrDefaultAsync(i => i.lopId == lopId);
+            var grade = await _context.CotDiems.Where(g => g.lopId == lopId).ToListAsync();
             if (grade == null)
             {
                 return null;
@@ -44,12 +45,12 @@ namespace server.Repository
             }
         }
 
-        public async Task<CotDiem> DelAsync(int lopId)
+        public async Task<CotDiem> DelAsync(int id)
         {
             //delete grade
             try
             {
-                var gradeModel = await _context.CotDiems.FirstOrDefaultAsync(x => x.lopId == lopId);
+                var gradeModel = await _context.CotDiems.FirstOrDefaultAsync(x => x.id == id);
 
                 if (gradeModel == null)
                 {
@@ -68,12 +69,12 @@ namespace server.Repository
 
         }
 
-        public async Task<CotDiem?> UpdateAsync(int lopId, UpdateGradeRequestDto gradeDto)
+        public async Task<CotDiem?> UpdateAsync(UpdateGradeRequestDto gradeDto)
         {
             //update grade
             try
             {
-                var grade = await _context.CotDiems.FirstOrDefaultAsync(x => x.lopId == lopId);
+                var grade = await _context.CotDiems.FirstOrDefaultAsync(x => x.id == gradeDto.id);
 
                 if (grade == null)
                 {
@@ -86,7 +87,7 @@ namespace server.Repository
                 grade.acpPhucKhao = gradeDto.acpPhucKhao;
 
                 await _context.SaveChangesAsync();
-                return await _context.CotDiems.FirstOrDefaultAsync(x => x.lopId == lopId);
+                return await _context.CotDiems.FirstOrDefaultAsync(x => x.id == gradeDto.id);
             }
             catch (Exception ex)
             {

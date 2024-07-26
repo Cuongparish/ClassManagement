@@ -7,6 +7,8 @@ namespace server.Dtos.Grade
 {
     public class CreateGradeRequestDto
     {
+
+        public int lopId { get; set; }
         public string tenCotDiem { get; set; } = string.Empty;
         public float phanTramDiem { get; set; }
         public int khoa { get; set; }
