@@ -94,7 +94,7 @@ namespace server.Controllers
         }
 
         //sửa thành phần điểm
-        [HttpPost("updatePercentScore")]
+        [HttpPut("updatePercentScore")]
         [Authorize]
         public async Task<IActionResult> updatePercentScore_inClass([FromBody] UpdateGradeRequestDto updateGrade)
         {

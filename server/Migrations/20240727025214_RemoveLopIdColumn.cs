@@ -6,10 +6,8 @@
 
 namespace server.Migrations
 {
-    /// <inheritdoc />
     public partial class RemoveLopIdColumn : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
@@ -32,6 +30,14 @@ namespace server.Migrations
                 oldType: "nvarchar(max)",
                 oldNullable: true);
 
+            // Thêm cột tạm thời vào bảng GiaoVienLopHoc
+            migrationBuilder.AddColumn<int>(
+                name: "TempColumn",
+                table: "GiaoVienLopHoc",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
             // Xóa ràng buộc và cột lopId từ bảng GiaoVienLopHoc
             migrationBuilder.DropPrimaryKey(
                 name: "PK_GiaoVienLopHoc",
@@ -41,8 +47,21 @@ namespace server.Migrations
                 name: "lopId",
                 table: "GiaoVienLopHoc");
 
+            // Xóa cột giaoVienId nếu nó đã tồn tại trước đó
+            migrationBuilder.DropColumn(
+                name: "giaoVienId",
+                table: "GiaoVienLopHoc");
+
+            // Thêm cột lopId và giaoVienId
             migrationBuilder.AddColumn<int>(
                 name: "lopId",
+                table: "GiaoVienLopHoc",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "giaoVienId",
                 table: "GiaoVienLopHoc",
                 type: "int",
                 nullable: false,
@@ -51,7 +70,20 @@ namespace server.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_GiaoVienLopHoc",
                 table: "GiaoVienLopHoc",
-                column: "lopId");
+                columns: new[] { "lopId", "giaoVienId" });
+
+            // Xóa cột tạm thời sau khi đã thêm cột mới
+            migrationBuilder.DropColumn(
+                name: "TempColumn",
+                table: "GiaoVienLopHoc");
+
+            // Thêm cột tạm thời vào bảng HocSinhLopHoc
+            migrationBuilder.AddColumn<int>(
+                name: "TempColumn",
+                table: "HocSinhLopHoc",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
 
             // Xóa ràng buộc và cột lopId từ bảng HocSinhLopHoc
             migrationBuilder.DropPrimaryKey(
@@ -62,8 +94,21 @@ namespace server.Migrations
                 name: "lopId",
                 table: "HocSinhLopHoc");
 
+            // Xóa cột hocSinhId nếu nó đã tồn tại trước đó
+            migrationBuilder.DropColumn(
+                name: "hocSinhId",
+                table: "HocSinhLopHoc");
+
+            // Thêm cột lopId và hocSinhId
             migrationBuilder.AddColumn<int>(
                 name: "lopId",
+                table: "HocSinhLopHoc",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "hocSinhId",
                 table: "HocSinhLopHoc",
                 type: "int",
                 nullable: false,
@@ -72,7 +117,12 @@ namespace server.Migrations
             migrationBuilder.AddPrimaryKey(
                 name: "PK_HocSinhLopHoc",
                 table: "HocSinhLopHoc",
-                column: "lopId");
+                columns: new[] { "lopId", "hocSinhId" });
+
+            // Xóa cột tạm thời sau khi đã thêm cột mới
+            migrationBuilder.DropColumn(
+                name: "TempColumn",
+                table: "HocSinhLopHoc");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
@@ -84,7 +134,6 @@ namespace server.Migrations
                 });
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
@@ -105,6 +154,14 @@ namespace server.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
 
+            // Thêm cột tạm thời vào bảng GiaoVienLopHoc
+            migrationBuilder.AddColumn<int>(
+                name: "TempColumn",
+                table: "GiaoVienLopHoc",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
             // Khôi phục lại cột lopId với thuộc tính IDENTITY
             migrationBuilder.DropPrimaryKey(
                 name: "PK_GiaoVienLopHoc",
@@ -112,6 +169,10 @@ namespace server.Migrations
 
             migrationBuilder.DropColumn(
                 name: "lopId",
+                table: "GiaoVienLopHoc");
+
+            migrationBuilder.DropColumn(
+                name: "giaoVienId",
                 table: "GiaoVienLopHoc");
 
             migrationBuilder.AddColumn<int>(
@@ -125,6 +186,19 @@ namespace server.Migrations
                 name: "PK_GiaoVienLopHoc",
                 table: "GiaoVienLopHoc",
                 column: "lopId");
+
+            // Xóa cột tạm thời sau khi đã khôi phục lại cột cũ
+            migrationBuilder.DropColumn(
+                name: "TempColumn",
+                table: "GiaoVienLopHoc");
+
+            // Thêm cột tạm thời vào bảng HocSinhLopHoc
+            migrationBuilder.AddColumn<int>(
+                name: "TempColumn",
+                table: "HocSinhLopHoc",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
 
             // Khôi phục lại cột lopId với thuộc tính IDENTITY cho bảng HocSinhLopHoc
             migrationBuilder.DropPrimaryKey(
@@ -135,6 +209,10 @@ namespace server.Migrations
                 name: "lopId",
                 table: "HocSinhLopHoc");
 
+            migrationBuilder.DropColumn(
+                name: "hocSinhId",
+                table: "HocSinhLopHoc");
+
             migrationBuilder.AddColumn<int>(
                 name: "lopId",
                 table: "HocSinhLopHoc",
@@ -146,6 +224,11 @@ namespace server.Migrations
                 name: "PK_HocSinhLopHoc",
                 table: "HocSinhLopHoc",
                 column: "lopId");
+
+            // Xóa cột tạm thời sau khi đã khôi phục lại cột cũ
+            migrationBuilder.DropColumn(
+                name: "TempColumn",
+                table: "HocSinhLopHoc");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
