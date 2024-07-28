@@ -1,18 +1,46 @@
-import React from 'react';
-import { Dropdown, Layout, Menu } from 'antd';
+import React, { useState } from 'react';
+import { Dropdown, Layout, Menu, Modal, Input, Button, Form } from 'antd';
 
 import { CiCirclePlus } from "react-icons/ci";
 import { VscBell } from "react-icons/vsc";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { useNavigate } from 'react-router-dom';
 
-import "../../../App.css"
+import "../../../App.css";
 
 const { Header } = Layout;
 
 const Navbar: React.FC = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
+    const [isJoinClassModalVisible, setJoinClassModalVisible] = useState(false);
+    const [isCreateClassModalVisible, setCreateClassModalVisible] = useState(false);
+
+    const showJoinClassModal = () => {
+        setJoinClassModalVisible(true);
+    };
+
+    const handleJoinClassCancel = () => {
+        setJoinClassModalVisible(false);
+    };
+
+    const showCreateClassModal = () => {
+        setCreateClassModalVisible(true);
+    };
+
+    const handleCreateClassCancel = () => {
+        setCreateClassModalVisible(false);
+    };
+
+    const handleJoinClassSubmit = (values: unknown) => {
+        console.log('Join class with code:', values);
+        setJoinClassModalVisible(false);
+    };
+
+    const handleCreateClassSubmit = (values: unknown) => {
+        console.log('Create class with values:', values);
+        setCreateClassModalVisible(false);
+    };
 
     const dropdownStyle = {
         width: '200px',
@@ -21,8 +49,8 @@ const Navbar: React.FC = () => {
 
     const plusMenu = (
         <Menu>
-            <Menu.Item key="1">Tham gia lớp học</Menu.Item>
-            <Menu.Item key="2">Tạo lớp học</Menu.Item>
+            <Menu.Item key="1" onClick={showJoinClassModal}>Tham gia lớp học</Menu.Item>
+            <Menu.Item key="2" onClick={showCreateClassModal}>Tạo lớp học</Menu.Item>
         </Menu>
     );
 
@@ -49,7 +77,6 @@ const Navbar: React.FC = () => {
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
-
             }}
             className='menu-top justify-between'
         >
@@ -74,8 +101,67 @@ const Navbar: React.FC = () => {
                     <HiOutlineUserCircle className='w-10 h-10 mt-1 mx-3 cursor-pointer hover:text-fuchsia-400' />
                 </Dropdown>
             </div>
-        </Header>
 
+            <Modal
+                title="Tham gia lớp học"
+                visible={isJoinClassModalVisible}
+                onCancel={handleJoinClassCancel}
+                footer={null}
+            >
+                <Form onFinish={handleJoinClassSubmit}>
+                    <Form.Item
+                        name="classCode"
+                        rules={[{ required: true, message: 'Vui lòng nhập mã lớp!' }]}
+                    >
+                        <Input placeholder="Mã lớp" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Tham gia
+                        </Button>
+                        <Button onClick={handleJoinClassCancel} style={{ marginLeft: '8px' }}>
+                            Hủy
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            <Modal
+                title="Tạo lớp học"
+                visible={isCreateClassModalVisible}
+                onCancel={handleCreateClassCancel}
+                footer={null}
+            >
+                <Form onFinish={handleCreateClassSubmit}>
+                    <Form.Item
+                        name="className"
+                        rules={[{ required: true, message: 'Vui lòng nhập tên lớp học!' }]}
+                    >
+                        <Input placeholder="Tên lớp học" />
+                    </Form.Item>
+                    <Form.Item
+                        name="subject"
+                        rules={[{ required: true, message: 'Vui lòng nhập chủ đề!' }]}
+                    >
+                        <Input placeholder="Chủ đề" />
+                    </Form.Item>
+                    <Form.Item
+                        name="room"
+                        rules={[{ required: true, message: 'Vui lòng nhập phòng!' }]}
+                    >
+                        <Input placeholder="Phòng" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Tạo
+                        </Button>
+                        <Button onClick={handleCreateClassCancel} style={{ marginLeft: '8px' }}>
+                            Hủy
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </Header>
     );
 };
 
