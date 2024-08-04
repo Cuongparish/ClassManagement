@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
 
     const userMenu = (
         <Menu>
-            <Menu.Item key="1">Profile</Menu.Item>
+            <Menu.Item key="1" onClick={() => navigate('/profile')}>Profile</Menu.Item>
             <Menu.Item key="2">Logout</Menu.Item>
         </Menu>
     );

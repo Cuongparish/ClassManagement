@@ -8,7 +8,8 @@ interface User {
   DOB: string;
   Sex: string;
   Phone: string;
-  StudentId: string;
+  StudentId?: string;
+  Token?: string;
 }
 
 interface UserContextProps {
@@ -19,16 +20,7 @@ interface UserContextProps {
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>({
-    idUser: "1",
-    Email: "user@example.com",
-    Pw: "password",
-    FullName: "John Doe",
-    DOB: "1990-01-01",
-    Sex: "Male",
-    Phone: "123-456-7890",
-    StudentId: "S123456",
-  });
+  const [user, setUser] = useState<User | null>(null);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -37,6 +29,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = (): UserContextProps => {
   const context = useContext(UserContext);
   if (!context) {

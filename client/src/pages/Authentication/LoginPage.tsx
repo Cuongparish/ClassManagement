@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LeftBanner from "./components/LeftBanner";
 import { PrimaryButton, GoogleButton, FaceBookButton } from "../../components/Button";
 
@@ -7,18 +7,49 @@ import { FaChevronLeft } from "react-icons/fa";
 import { Input } from 'antd';
 
 import "../../App.css";
+import { useUser } from '../../utils/UserContext';
+import { login } from '../../services/authentication.service';
+
+interface User {
+    idUser: string;
+    Email: string;
+    Pw: string;
+    FullName: string;
+    DOB: string;
+    Sex: string;
+    Phone: string;
+    StudentId?: string;
+    Token?: string;
+}
 
 const LoginPage = (): React.ReactElement => {
+    const { setUser } = useUser();
     const navigate = useNavigate();
-    // const location = useLocation();
-  
-    // const from = location.state?.from?.pathname || "/home";
 
-    const handleLogin = () => {
-        // navigate(from, { replace: true });
-        navigate(`/home`);
-        // window.location.reload();
-      };
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+
+    const handleLogin = async () => {
+        try {
+            const res = await login({ username: email, password: password });
+            if (res) {
+                const result: User = {
+                    idUser: res.data.id,
+                    Email: res.data.email,
+                    FullName: res.data.fullName,
+                    Phone: res.data.phone,
+                    Pw: res.data.pw,
+                    Sex: res.data.sex,
+                    Token: res.data.token,
+                    DOB: res.data.dob,
+                }
+                setUser(result);
+                navigate('/home');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="flex">
@@ -49,13 +80,13 @@ const LoginPage = (): React.ReactElement => {
 
                     <form className='text-left w-1/3 mx-auto mt-3'>
                         <label className='block font-medium' htmlFor='email'>Mail</label>
-                        <Input placeholder='Email' className='w-full border-2 border-indigo-500/75 hover:border-indigo-500 focus:border-indigo-500 mb-5' />
+                        <Input placeholder='Email' onChange={(e) => setEmail(e.target.value)} className='w-full border-2 border-indigo-500/75 hover:border-indigo-500 focus:border-indigo-500 mb-5' />
 
                         <label className='block font-medium' htmlFor='email'>Password</label>
-                        <Input.Password placeholder='Password' className='w-full border-2 border-indigo-500/75 hover:border-indigo-500 focus:border-indigo-500 mb-5' />
+                        <Input.Password placeholder='Password' onChange={(e) => setPassword(e.target.value)} className='w-full border-2 border-indigo-500/75 hover:border-indigo-500 focus:border-indigo-500 mb-5' />
 
                         <div className='text-center mb-3'>
-                            <PrimaryButton name='Login' onClick={handleLogin}/>
+                            <PrimaryButton name='Login' onClick={handleLogin} />
                         </div>
                     </form>
 
