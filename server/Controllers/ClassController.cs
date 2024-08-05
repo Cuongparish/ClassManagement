@@ -269,10 +269,8 @@ namespace server.Controllers
             }
         }
 
-        [HttpPost]
-        // [HttpGet("{maLop}")]
-        [Authorize]
-        // public async Task<IActionResult> GetClassById([FromRoute] string maLop, [FromQuery] string role)
+        // [HttpPost]
+        // [Authorize]
         // public async Task<IActionResult> addUserinClass([FromBody] dynamic data)
         // {
         //     try
@@ -361,42 +359,44 @@ namespace server.Controllers
 
 
         // xuất ds học sinh tên + mssv
-        [HttpGet("export")]
-        public async Task<IActionResult> Export()
+        [HttpGet("export/listStudent/{lopId:int}")]
+        public async Task<IActionResult> Export_ListStudents([FromRoute] int lopId)
         {
 
-            var students = new List<StudentDto>
-            {
-                new StudentDto { id= 1, userId=2, studentId= 3 },
-                new StudentDto {  id=3, userId= 5, studentId= 6 }
-            };
+            // var students = new List<StudentDto>
+            // {
+            //     new StudentDto { id= 1, userId=2, studentId= 3 },
+            //     new StudentDto {  id=3, userId= 5, studentId= 6 }
+            // };
 
-            var stream = new MemoryStream();
-            using (var package = new ExcelPackage(stream))
-            {
-                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+            // var stream = new MemoryStream();
+            // using (var package = new ExcelPackage(stream))
+            // {
+            //     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
 
-                // Tạo tiêu đề cho các cột
-                worksheet.Cells[1, 1].Value = "Id";
-                worksheet.Cells[1, 2].Value = "UserId";
-                worksheet.Cells[1, 3].Value = "StudentId";
+            //     // Tạo tiêu đề cho các cột
+            //     worksheet.Cells[1, 1].Value = "Id";
+            //     worksheet.Cells[1, 2].Value = "UserId";
+            //     worksheet.Cells[1, 3].Value = "StudentId";
 
-                // Điền dữ liệu vào các ô
-                for (int i = 0; i < students.Count; i++)
-                {
-                    worksheet.Cells[i + 2, 1].Value = students[i].id;
-                    worksheet.Cells[i + 2, 2].Value = students[i].userId;
-                    worksheet.Cells[i + 2, 3].Value = students[i].studentId;
-                }
+            //     // Điền dữ liệu vào các ô
+            //     for (int i = 0; i < students.Count; i++)
+            //     {
+            //         worksheet.Cells[i + 2, 1].Value = students[i].id;
+            //         worksheet.Cells[i + 2, 2].Value = students[i].userId;
+            //         worksheet.Cells[i + 2, 3].Value = students[i].studentId;
+            //     }
 
-                package.Save();
-            }
+            //     package.Save();
+            // }
 
-            stream.Position = 0;
-            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var fileName = "students.xlsx";
+            // stream.Position = 0;
+            // var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            // var fileName = "students.xlsx";
 
-            return File(stream, contentType, fileName);
+            // return File(stream, contentType, fileName);
+            var hs = await _studentRepo.GetAllHocSinhIdAsync(lopId);
+            return Ok(hs);
         }
 
         [HttpPost("upload")]
