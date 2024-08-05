@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Form, Input, Button, Select, notification } from "antd";
 import { useUser } from "../../../utils/UserContext";
+import dayjs from "dayjs";
 
 const InfoTab: React.FC = () => {
     const { user } = useUser();
@@ -22,6 +23,10 @@ const InfoTab: React.FC = () => {
         //todo
         console.log(field);
         console.log(value);
+    };
+
+    const formatDate = (dateString: string | undefined) => {
+        return dateString ? dayjs(dateString).format('YYYY-MM-DD') : '';
     };
 
     return (
@@ -55,7 +60,7 @@ const InfoTab: React.FC = () => {
                         <Input
                             id="dob"
                             type="date"
-                            defaultValue={user?.DOB}
+                            defaultValue={formatDate(user?.DOB)}
                             onChange={(e) => handleInputChange('DOB', e.target.value)}
                         />
                     </Form.Item>

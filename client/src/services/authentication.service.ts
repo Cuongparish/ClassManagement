@@ -25,7 +25,7 @@ const register = async (
   email: string,
   password: string,
   fullName: string,
-  dob: Date,
+  dob: string,
   sex: string,
   phone: string
 ) => {

@@ -12,10 +12,10 @@ const LeftBanner = (): ReactElement => {
       <h1 id="brand_name" className="text-white text-center">Grade Management</h1>
       <img
         src={"/images/shake-hand.png"}
-        className="block mt-10"
+        className="block mt-5"
         alt=""
       />
-      <div className="text-white text-center mt-10">
+      <div className="text-white text-center mb-5">
         <h1>Your class partner</h1>
         <p>Reduce the time spent managing your class grades</p>
       </div>

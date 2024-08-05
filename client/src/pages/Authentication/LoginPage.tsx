@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LeftBanner from "./components/LeftBanner";
-import { PrimaryButton, GoogleButton, FaceBookButton } from "../../components/Button";
+import { PrimaryButton } from "../../components/Button";
 
 import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronLeft } from "react-icons/fa";
@@ -32,7 +32,7 @@ const LoginPage = (): React.ReactElement => {
     const handleLogin = async () => {
         try {
             const res = await login({ username: email, password: password });
-            if (res) {
+            if (res?.status == 200) {
                 const result: User = {
                     idUser: res.data.id,
                     Email: res.data.email,
@@ -42,6 +42,7 @@ const LoginPage = (): React.ReactElement => {
                     Sex: res.data.sex,
                     Token: res.data.token,
                     DOB: res.data.dob,
+                    StudentId: res.data.studentId,
                 }
                 setUser(result);
                 navigate('/home');
@@ -93,13 +94,6 @@ const LoginPage = (): React.ReactElement => {
                     <a href="/resetPW">
                         <p className='underline underline-offset-4 hover:text-blue-600 mb-5'>Having Issues with your Password?</p>
                     </a>
-
-                    <p className="font-middle">OR LOGIN WITH</p>
-
-                    <div className='flex justify-center gap-4 mt-3'>
-                        <GoogleButton name='Google' />
-                        <FaceBookButton name='FaceBook' />
-                    </div>
                 </div>
             </div>
         </div>
