@@ -31,6 +31,8 @@ namespace server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<HocSinhLopHoc>()
+        .HasKey(h => new { h.lopId, h.hocSinhId });
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole
@@ -47,42 +49,6 @@ namespace server.Data
             builder.Entity<IdentityRole>().HasData(roles);
         }
 
-        // cot diem
-        // 1 cot diem thuoc 1 lop hoc
-        // 1 lop hoc co nhieu cot diem
-        // builder.Entity<BangDiemThanhPhan>(x => x.HasKey(p => new { p.hocSinhId, p.cotDiemId }));
-        // builder.Entity<CotDiem>(x => x.HasKey(p => new { p.id, p.lopId }));
 
-        // builder.Entity<CotDiem>()
-        //     .HasOne(cd => cd.LopHoc)
-        //     .WithMany(lh => lh.CotDiems)
-        //     .HasForeignKey(cd => cd.lopId)
-        //     .IsRequired();
-
-        // builder.Entity<BangDiemThanhPhan>(x => x.HasKey(p => new { p.hocSinhId, p.cotDiemId }));
-        // //bdtp
-        // // 1 bdtp thuoc 1 cot diem
-        // // 1 cot diem thuoc nhieu bdtp
-        // builder.Entity<BangDiemThanhPhan>()
-        //     .HasOne(cd => cd.CotDiem)
-        //     .WithMany(bdtp => bdtp.BangDiemThanhPhans)
-        //     .HasForeignKey(cd => cd.cotDiemId)
-        //     .IsRequired();
-
-        // builder.Entity<BangDiemThanhPhan>()
-        //     .HasMany(bdtp => bdtp.HocSinhs)
-        //     .WithMany(hs => hs.BangDiemThanhPhans)
-        //     .HasForeignKey(bdtp => bdtp.hocSinhId)
-        //     .IsRequired();
-
-        // builder.Entity<GiaoVien>()
-        //     .HasOne(gv => gv.user)          // GiaoVien có một User
-        //     .WithOne()                      // User cũng chỉ thuộc về duy nhất một GiaoVien
-        //     .HasForeignKey<GiaoVien>(gv => gv.userId)  // Khóa ngoại là userId trong GiaoVien
-        //     .IsRequired();                  // Bắt buộc phải có User
-
-
-
-        // }
     }
 }

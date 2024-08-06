@@ -71,6 +71,20 @@ namespace server.Repository
             return await result.ToListAsync();
         }
 
+        public async Task<List<dynamic>> GetProfileIdAsync(int[] hocsinhIds)
+        {
+            var result = await (from hs in _context.HocSinhs
+                                join u in _context.Users on hs.userId equals u.id
+                                where hocsinhIds.Contains(hs.id)
+                                select new
+                                {
+                                    StudentId = hs.studentId,
+                                    FullName = u.fullName
+                                }).ToListAsync();
+
+            return result.Cast<dynamic>().ToList();
+        }
+
 
     }
 }

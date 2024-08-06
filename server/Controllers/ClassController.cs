@@ -362,41 +362,36 @@ namespace server.Controllers
         [HttpGet("export/listStudent/{lopId:int}")]
         public async Task<IActionResult> Export_ListStudents([FromRoute] int lopId)
         {
-
-            // var students = new List<StudentDto>
-            // {
-            //     new StudentDto { id= 1, userId=2, studentId= 3 },
-            //     new StudentDto {  id=3, userId= 5, studentId= 6 }
-            // };
-
-            // var stream = new MemoryStream();
-            // using (var package = new ExcelPackage(stream))
-            // {
-            //     var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-
-            //     // Tạo tiêu đề cho các cột
-            //     worksheet.Cells[1, 1].Value = "Id";
-            //     worksheet.Cells[1, 2].Value = "UserId";
-            //     worksheet.Cells[1, 3].Value = "StudentId";
-
-            //     // Điền dữ liệu vào các ô
-            //     for (int i = 0; i < students.Count; i++)
-            //     {
-            //         worksheet.Cells[i + 2, 1].Value = students[i].id;
-            //         worksheet.Cells[i + 2, 2].Value = students[i].userId;
-            //         worksheet.Cells[i + 2, 3].Value = students[i].studentId;
-            //     }
-
-            //     package.Save();
-            // }
-
-            // stream.Position = 0;
-            // var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            // var fileName = "students.xlsx";
-
-            // return File(stream, contentType, fileName);
             var hs = await _studentRepo.GetAllHocSinhIdAsync(lopId);
-            return Ok(hs);
+            var studentIds = hs.Select(t => t.hocSinhId).ToArray();
+
+            var profile = await _studentRepo.GetProfileIdAsync(studentIds);
+
+            var stream = new MemoryStream();
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                // Tạo tiêu đề cho các cột
+                worksheet.Cells[1, 1].Value = "StudentId";
+                worksheet.Cells[1, 2].Value = "FullName";
+
+                // Điền dữ liệu vào các ô
+                for (int i = 0; i < profile.Count; i++)
+                {
+                    dynamic item = profile[i];
+                    worksheet.Cells[i + 2, 1].Value = item.StudentId;  // Sử dụng tên thuộc tính chính xác
+                    worksheet.Cells[i + 2, 2].Value = item.FullName;   // Sử dụng tên thuộc tính chính xác
+                }
+
+                package.Save();
+            }
+
+            stream.Position = 0;
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = "students.xlsx";
+
+            return File(stream, contentType, fileName);
         }
 
         [HttpPost("upload")]
