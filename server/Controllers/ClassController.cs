@@ -269,97 +269,9 @@ namespace server.Controllers
             }
         }
 
-        // [HttpPost]
-        // [Authorize]
-        // public async Task<IActionResult> addUserinClass([FromBody] dynamic data)
-        // {
-        //     try
-        //     {
-        //         //get userId
-        //         var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last().ToString();
-
-        //         var principal = _tokenService.DecodeToken(token);
-        //         if (principal == null)
-        //         {
-        //             return BadRequest("Claims not found");
-        //         }
-        //         var emailClaim = principal.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
-        //         var user = await _userRepo.GetByUsernameAsync(emailClaim);
-
-        //         // get lopId
-        //         var classes = await _classRepo.GetByMaLopAsync(data.maLop);
-
-        //         if (data.role == "gv")
-        //         {
-        //             //check exists teacher in table GiaoVien
-        //             var existingTeacher = await _teacherRepo.IsExistsAsync(user.id);
-
-        //             //not exists
-        //             if (existingTeacher == null)
-        //             {
-        //                 //add into table GiaoVien
-        //                 var teacher = new CreateTeacherRequestDto
-        //                 {
-        //                     userId = user.id,
-        //                 };
-        //                 var teacherModel = teacher.ToTeacherFromCreateDTO();
-        //                 var resultTeacher = await _teacherRepo.CreateAsync(teacherModel);
-
-        //                 //add into table GiaoVienLopHoc
-        //                 var teacherClass = new CreateTeacherClassRequestDto
-        //                 {
-        //                     lopId = classes.id,
-        //                     giaoVienId = resultTeacher.id,
-        //                 };
-        //                 var teacherClassModel = teacherClass.ToTeacherClassFromCreateDTO();
-        //                 await _teacherRepo.CreateAsync(teacherClassModel);
-        //             }
-        //             //exists
-        //             //add into table GiaoVienLopHoc
-        //             var teacherClass1 = new CreateTeacherClassRequestDto
-        //             {
-        //                 lopId = classes.id,
-        //                 giaoVienId = existingTeacher.id,
-        //             };
-        //             var teacherClassModel1 = teacherClass1.ToTeacherClassFromCreateDTO();
-        //             await _teacherRepo.CreateAsync(teacherClassModel1);
-
-        //         }
-
-        //         if (data.role == "hs")
-        //         {
-        //             var student = await _studentRepo.GetHocSinhIdAsync(user.id);
-        //             if (student == null)
-        //             {
-        //                 //add into table HocSinh
-        //                 var student1 = new CreateStudentRequestDto
-        //                 {
-        //                     userId = user.id,
-        //                 };
-        //                 var studentModel = student1.ToStudentFromCreateDTO();
-        //                 await _studentRepo.CreateAsync(studentModel);
-        //             }
-        //             var result_student = await _studentRepo.GetHocSinhIdAsync(user.id);
-        //             //add into table HocSinhLopHoc
-        //             var studentClass1 = new CreateStudentClassRequestDto
-        //             {
-        //                 lopId = classes.id,
-        //                 hocSinhId = result_student.id,
-        //             };
-        //             var studentClassModel1 = studentClass1.ToStudentClassFromCreateDTO();
-        //             await _studentRepo.CreateAsync(studentClassModel1);
-        //         }
-        //         return Ok(data.role);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return StatusCode(500, e);
-        //     }
-        // }
-
-
         // xuất ds học sinh tên + mssv
         [HttpGet("export/listStudent/{lopId:int}")]
+        [Authorize]
         public async Task<IActionResult> Export_ListStudents([FromRoute] int lopId)
         {
             var hs = await _studentRepo.GetAllHocSinhIdAsync(lopId);
@@ -394,15 +306,17 @@ namespace server.Controllers
             return File(stream, contentType, fileName);
         }
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        // lấy ds học sinh tên + mssv để đổi mssv
+        [HttpPost("upload/listStudent")]
+        [Authorize]
+        public async Task<IActionResult> Upload(IFormFile file, [FromQuery] int lopId)
         {
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded");
             }
 
-            var students = new List<StudentDto>();
+            var students = new List<dynamic>();
 
             using (var stream = new MemoryStream())
             {
@@ -417,19 +331,30 @@ namespace server.Controllers
 
                     for (int row = 2; row <= rowCount; row++) // Bắt đầu từ hàng 2 để bỏ qua tiêu đề
                     {
-                        var student = new StudentDto
+                        var student = new
                         {
-                            id = int.Parse(worksheet.Cells[row, 1].Text),
-                            userId = int.Parse(worksheet.Cells[row, 2].Text),
-                            studentId = int.Parse(worksheet.Cells[row, 3].Text)
+                            StudentId = int.TryParse(worksheet.Cells[row, 1].Text, out var studentId) ? studentId : (int?)null,
+                            FullName = worksheet.Cells[row, 2].Text
                         };
                         students.Add(student);
                     }
                 }
             }
 
-            // Xử lý dữ liệu từ file tải lên ở đây
-            // Ví dụ: lưu vào cơ sở dữ liệu, trả về danh sách sinh viên, v.v.
+            var hs = await _studentRepo.GetAllHocSinhIdAsync(lopId);
+            var studentIds = hs.Select(t => t.hocSinhId).ToArray();
+
+            var profile = await _studentRepo.GetProfileIdAsync(studentIds);
+
+            for (int i = 0; i < profile.Count; i++)
+            {
+                dynamic item1 = students[i];
+                dynamic item2 = profile[i];
+                if (item1.StudentId != item2.StudentId)
+                {
+                    await _studentRepo.UpdateStudentIdAsync(item1.FullName, item1.StudentId);
+                }
+            }
             return Ok(students);
         }
     }

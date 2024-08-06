@@ -85,6 +85,17 @@ namespace server.Repository
             return result.Cast<dynamic>().ToList();
         }
 
+        public async Task<HocSinh> UpdateStudentIdAsync(string fullName, int studentId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(i => i.fullName == fullName);
+            var student = await _context.HocSinhs.FirstOrDefaultAsync(i => i.userId == user.id);
+            student.studentId = studentId;
+
+            await _context.SaveChangesAsync();
+
+            return student;
+        }
+
 
     }
 }

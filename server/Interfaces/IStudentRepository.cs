@@ -16,6 +16,7 @@ namespace server.Interfaces
         Task<List<HocSinhLopHoc>> GetAllHocSinhIdAsync(int lopId);
         Task<List<HocSinh?>> GetUserIdAsync(int[] hocsinhIds);
         Task<List<dynamic>> GetProfileIdAsync(int[] hocsinhIds);
+        Task<HocSinh> UpdateStudentIdAsync(string fullName, int studentId);
 
     }
 }
