@@ -14,7 +14,7 @@ interface RouteItem {
   page: () => ReactElement;
   // eslint-disable-next-line no-empty-pattern
   layout: ({}: LayoutProp) => ReactElement;
-  // role?: Role;
+  requiresAuth?: boolean;
 }
 
 const routes: RouteItem[] = [
@@ -24,10 +24,10 @@ const routes: RouteItem[] = [
   { path: "/resetPW", page: Authentication.ResetPasswordPage, layout: EmptyLayout },
   { path: "/join/class", page: Authentication.JoinClassPage, layout: EmptyLayout },
 
-  {path: "/home", page: Home.HomePage, layout: HomeLayout},
-  {path: "/profile", page: Home.ProfilePage, layout: HomeLayout},
+  { path: "/home", page: Home.HomePage, layout: HomeLayout, requiresAuth: true },
+  { path: "/profile", page: Home.ProfilePage, layout: HomeLayout, requiresAuth: true },
 
-  {path: "/class", page: Class.ClassPage, layout: ClassLayout},
+  { path: "/class", page: Class.ClassPage, layout: ClassLayout, requiresAuth: true },
 ];
 
 export default routes;

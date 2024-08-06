@@ -7,11 +7,14 @@ import { HiOutlineUserCircle } from "react-icons/hi2";
 import { useNavigate } from 'react-router-dom';
 
 import "../../../App.css";
+import { useUser } from '../../../utils/UserContext';
 
 const { Header } = Layout;
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
+
+    const {setUser} = useUser();
 
     const [isJoinClassModalVisible, setJoinClassModalVisible] = useState(false);
     const [isCreateClassModalVisible, setCreateClassModalVisible] = useState(false);
@@ -42,6 +45,11 @@ const Navbar: React.FC = () => {
         setCreateClassModalVisible(false);
     };
 
+    const logout = () => {
+        sessionStorage.removeItem("user");
+        setUser(null);
+      };
+
     const dropdownStyle = {
         width: '200px',
         padding: '10px',
@@ -64,7 +72,7 @@ const Navbar: React.FC = () => {
     const userMenu = (
         <Menu>
             <Menu.Item key="1" onClick={() => navigate('/profile')}>Profile</Menu.Item>
-            <Menu.Item key="2">Logout</Menu.Item>
+            <Menu.Item key="2" onClick={logout}>Logout</Menu.Item>
         </Menu>
     );
 
