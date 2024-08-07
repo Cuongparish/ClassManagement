@@ -27,7 +27,7 @@ const routes: RouteItem[] = [
   { path: "/home", page: Home.HomePage, layout: HomeLayout, requiresAuth: true },
   { path: "/profile", page: Home.ProfilePage, layout: HomeLayout, requiresAuth: true },
 
-  { path: "/class", page: Class.ClassPage, layout: ClassLayout, requiresAuth: true },
+  { path: "/class/:idLop", page: Class.ClassPage, layout: ClassLayout, requiresAuth: true },
 ];
 
 export default routes;

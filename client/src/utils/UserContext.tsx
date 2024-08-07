@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface User {
-  idUser: string;
+  idUser: number;
   Email: string;
   Pw: string;
   FullName: string;
@@ -9,7 +9,7 @@ interface User {
   Sex: string;
   Phone: string;
   StudentId?: string;
-  Token?: string;
+  Token: string;
 }
 
 interface UserContextProps {

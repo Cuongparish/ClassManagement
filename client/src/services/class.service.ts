@@ -4,7 +4,7 @@ import { API_URL } from "../utils/env";
 const creatClass = async (
   tenLop: string,
   chuDe: string,
-  phong: string,
+  phong: string | undefined,
   userId: number,
   token: string
 ) => {
