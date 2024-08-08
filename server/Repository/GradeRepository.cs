@@ -95,5 +95,37 @@ namespace server.Repository
                 throw;
             }
         }
+
+        public async Task<List<CotDiem>> GradeComponentAsync(int lopId)
+        {
+            try
+            {
+                var result = _context.CotDiems.AsQueryable();
+                result = result.Where(s => s.lopId == lopId);
+                return await result.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
+
+        public async Task<List<BangDiemThanhPhan>> GradeDetailAsync(int lopId, int[] hocSinhIds)
+        {
+            try
+            {
+                var result = await _context.BangDiemThanhPhans
+                .Where(s => hocSinhIds.Contains(s.hocSinhId) && s.lopId == lopId)
+                .ToListAsync();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

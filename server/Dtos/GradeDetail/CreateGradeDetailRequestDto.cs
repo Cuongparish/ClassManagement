@@ -2,16 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
-namespace server.Models
+namespace server.Dtos.GradeDetail
 {
-    [Table("BangDiemThanhPhan")]
-    public class BangDiemThanhPhan
+    public class CreateGradeDetailRequestDto
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int hocSinhId { get; set; }
         public int cotDiemId { get; set; }
         public int lopId { get; set; }

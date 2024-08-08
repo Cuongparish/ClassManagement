@@ -13,6 +13,8 @@ namespace server.Interfaces
         Task<CotDiem> CreateAsync(CotDiem gradeModel);
         Task<CotDiem> DelAsync(int id);
         Task<CotDiem?> UpdateAsync(UpdateGradeRequestDto gradeDto);
+        Task<List<CotDiem>> GradeComponentAsync(int lopId);
+        Task<List<BangDiemThanhPhan>> GradeDetailAsync(int lopId, int[] hocSinhIds);
 
     }
 }

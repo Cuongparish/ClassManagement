@@ -28,11 +28,13 @@ namespace server.Data
         public DbSet<PhucKhao> PhucKhaos { get; set; }
         public DbSet<ThongBao> ThongBaos { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<BangDiemThanhPhan> BangDiemThanhPhans { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<HocSinhLopHoc>()
         .HasKey(h => new { h.lopId, h.hocSinhId });
+
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole

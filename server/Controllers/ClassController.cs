@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using server.Data;
@@ -26,13 +27,15 @@ namespace server.Controllers
         private readonly ITeacherRepository _teacherRepo;
         private readonly IStudentRepository _studentRepo;
         private readonly IUserRepository _userRepo;
+        private readonly IGradeRepository _gradeRepo;
         private readonly ITokenService _tokenService;
-        public ClassController(ApplicationDBContext context, ITokenService tokenService, IUserRepository userRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
+        public ClassController(ApplicationDBContext context, ITokenService tokenService, IUserRepository userRepo, IGradeRepository gradeRepo, IClassRepository classRepo, ITeacherRepository teacherRepo, IStudentRepository studentRepo)
         {
             _classRepo = classRepo;
             _teacherRepo = teacherRepo;
             _studentRepo = studentRepo;
             _userRepo = userRepo;
+            _gradeRepo = gradeRepo;
             _tokenService = tokenService;
             _context = context;
         }
@@ -357,5 +360,51 @@ namespace server.Controllers
             }
             return Ok(students);
         }
+        // hiển thị các thành phần điểm của lớp học + profile hoc sinh
+        [HttpPost("listStudentAttackGradeBoard")]
+        // [Authorize]
+        public async Task<IActionResult> GradeBoardofStudentClass([FromQuery] int lopId)
+        {
+            // lay
+            // var gradeComponent = await _gradeRepo.GradeComponentAsync(lopId);
+            // var resultGradeComponent = gradeComponent.Select(t => new { t.id, t.tenCotDiem, t.phanTramDiem }).ToArray();
+            // // ten + studentId
+            // //idlop, idhs
+            // var hs = await _studentRepo.GetAllHocSinhIdAsync(lopId);
+            // //studentId
+            // var studentIds = hs.Select(t => t.hocSinhId).ToArray();
+            // // studentID, fullName
+            // var profile = await _studentRepo.GetProfileIdAsync(studentIds);
+
+            // //     hocSinhId, cotDiemId, lopId, diem
+            // var result = await _gradeRepo.GradeDetailAsync(lopId, studentIds);
+
+            // Lấy danh sách học sinh theo lớp
+            var hs = await _studentRepo.GetAllHocSinhIdAsync(lopId);
+
+            // Chọn danh sách studentId
+            var studentIds = hs.Select(t => t.hocSinhId).ToArray();
+
+            // Lấy thông tin hồ sơ của học sinh
+            var profiles = await _studentRepo.GetProfileIdAsync(studentIds);
+
+            // Lấy chi tiết điểm của học sinh
+            var gradeDetails = await _gradeRepo.GradeDetailAsync(lopId, studentIds);
+
+            // Kết hợp dữ liệu vào một cấu trúc dữ liệu phù hợp
+            var result = profiles
+                .Select(profile => new
+                {
+                    hocSinhId = profile.hocSinhId,
+                    fullName = profile.fullName,
+                    Grades = gradeDetails.Where(g => g.hocSinhId == profile.hocSinhId).ToList()
+                })
+                .ToList();
+
+            return Ok(result);
+        }
     }
+
+
+
 }

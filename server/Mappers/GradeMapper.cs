@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using server.Dtos.Grade;
+using server.Dtos.GradeDetail;
 using server.Models;
 
 namespace server.Mappers
@@ -31,6 +32,28 @@ namespace server.Mappers
                 phanTramDiem = gradeDto.phanTramDiem,
                 khoa = gradeDto.khoa,
                 acpPhucKhao = gradeDto.acpPhucKhao
+            };
+        }
+        public static GradeDetailDto ToGradeDetailDto(this BangDiemThanhPhan gradeDetailModel)
+        {
+            return new GradeDetailDto
+            {
+
+                lopId = gradeDetailModel.lopId,
+                cotDiemId = gradeDetailModel.cotDiemId,
+                hocSinhId = gradeDetailModel.hocSinhId,
+                diem = gradeDetailModel.diem,
+            };
+        }
+
+        public static BangDiemThanhPhan ToGradeDetailFromCreateDTO(this CreateGradeDetailRequestDto gradeDetailDto)
+        {
+            return new BangDiemThanhPhan
+            {
+                lopId = gradeDetailDto.lopId,
+                cotDiemId = gradeDetailDto.cotDiemId,
+                hocSinhId = gradeDetailDto.hocSinhId,
+                diem = gradeDetailDto.diem,
             };
         }
     }
