@@ -7,8 +7,12 @@ import copy from "clipboard-copy";
 const Client_URL = "http://localhost:3000";
 
 interface DetailClassType {
-  MaLop: string;
-  TenLop: string;
+  maLop: string,
+  idLop: number,
+  tenLop: string,
+  phong: string,
+  state: boolean,
+  chuDe: string,
 }
 
 interface NewsProps {
@@ -16,7 +20,7 @@ interface NewsProps {
 }
 
 const News: React.FC<NewsProps> = ({ DetailClass }) => {
-  const link = `${Client_URL}/join-class/${DetailClass.MaLop}/hs`;
+  const link = `${Client_URL}/join-class/${DetailClass.maLop}/hs`;
 
   const CopyCode = async (code: string) => {
     try {
@@ -50,21 +54,22 @@ const News: React.FC<NewsProps> = ({ DetailClass }) => {
 
   return (
     <div className="px-[5%] mb-5 mt-3 ">
-      <Row className="mb-4 relative h-[250px] rounded-lg" style={{ backgroundImage: "url('images/detail_class_bg.png')" }}>
-        <h1 className="absolute bottom-2.5 left-2.5 text-white m-0 p-0">{DetailClass.TenLop}</h1>
+      <Row className="mb-4 relative h-[250px] rounded-lg" style={{ backgroundImage: "url('../images/detail_class_bg.png')" }}>
+        <h1 className="absolute bottom-2.5 left-2.5 text-white m-0 p-0">{DetailClass.tenLop}</h1>
       </Row>
 
       <Row>
-        <Col span={8} className="pr-4">
+        <Col span={8}>
           <Card className="mb-4 border-2 border-gray-200">
             <Card.Meta title="Mã lớp" className="pb-2" />
             <Card className="border-t border-gray-200">
-              <p className="text-2xl font-bold pb-2">{DetailClass.MaLop}</p>
+              <p className="text-2xl font-bold pb-2">{DetailClass.maLop}</p>
               <Row gutter={16}>
                 <Col span={12}>
                   <Button
-                    onClick={() => CopyCode(DetailClass.MaLop)}
+                    onClick={() => CopyCode(DetailClass.maLop)}
                     icon={<FaRegCopy />}
+                    className="pr-2"
                   >
                     Copy Code
                   </Button>
@@ -94,7 +99,7 @@ const News: React.FC<NewsProps> = ({ DetailClass }) => {
           </Card>
         </Col>
 
-        <Col span={16}>
+        <Col span={16} className="pl-4">
           <Input
             placeholder="Thông báo nội dung nào đó cho lớp học của ban"
             className="mb-4"

@@ -11,7 +11,7 @@ import { useUser } from '../../utils/UserContext';
 import { login } from '../../services/authentication.service';
 
 interface User {
-    idUser: string;
+    idUser: number;
     Email: string;
     Pw: string;
     FullName: string;
@@ -19,7 +19,7 @@ interface User {
     Sex: string;
     Phone: string;
     StudentId?: string;
-    Token?: string;
+    Token: string;
 }
 
 const LoginPage = (): React.ReactElement => {

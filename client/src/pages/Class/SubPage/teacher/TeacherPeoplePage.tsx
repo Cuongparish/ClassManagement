@@ -4,14 +4,11 @@ import { FaUserPlus } from 'react-icons/fa';
 import { DownloadButton, UploadButton } from '../../../../components/Button';
 
 interface PersonProps {
-  DetailClass: { MaLop: string; idLop: string };
   TeacherInClass: { FullName: string }[];
   StudentInClass: { FullName: string; StudentId: string }[];
 }
 
-const TeacherPeoplePage: React.FC<PersonProps> = ({ DetailClass, TeacherInClass, StudentInClass }) => {
-  const malop = DetailClass?.MaLop;
-
+const TeacherPeoplePage: React.FC<PersonProps> = ({ TeacherInClass, StudentInClass }) => {
   const [addTeacher, setAddTeacher] = useState(false);
   const [addStudent, setAddStudent] = useState(false);
   const [Email, setEmail] = useState('');
@@ -20,7 +17,6 @@ const TeacherPeoplePage: React.FC<PersonProps> = ({ DetailClass, TeacherInClass,
   const handleSendToTeacher = async () => {
     // todo
     console.log(Email);
-    console.log(malop);
   };
 
   const handleSendToStudent = async () => {

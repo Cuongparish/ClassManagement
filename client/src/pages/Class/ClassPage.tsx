@@ -1,22 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import { News, ReviewPage, StudentPeoplePage, TeacherPeoplePage } from "./SubPage";
 import StudentScoreTablePage from "./SubPage/student/StudentScoreTablePage";
 import TeacherScoreTablePage from "./SubPage/teacher/TeacherScoreTablePage";
+import { getDetailClass } from "../../services/class.service";
+import { useUser } from "../../utils/UserContext";
+import { useParams } from "react-router-dom";
 // import { useUser } from "../../utils/UserContext";
 
 const { TabPane } = Tabs;
 
+interface DetailClass {
+  maLop: string,
+  idLop: number,
+  tenLop: string,
+  phong: string,
+  state: boolean,
+  chuDe: string,
+}
+
 const ClassPage = (): React.ReactElement => {
   const [tab, setTab] = useState<string>("news");
+  const [detailClass, setDetailClass] = useState<DetailClass>();
+  const { idLop } = useParams();
 
-  // const { user } = useUser();
+  const { user } = useUser();
 
-  const DetailClass = {
-    MaLop: "ABC123",
-    idLop: "123456",
-    TenLop: "Lớp học React",
-  };
+  const GetDetailClass = async () => {
+    try {
+      if(user)
+      {
+        const res = await getDetailClass(Number(idLop), user?.Token);
+        console.log(res);
+        if(res?.status == 200) {
+          const result: DetailClass = {
+            maLop: res.data.maLop,
+            idLop: res.data.id,
+            tenLop: res.data.tenLop,
+            phong: res.data.phong,
+            state: res.data.state,
+            chuDe: res.data.chuDe,
+          }
+          setDetailClass(result);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    GetDetailClass();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   type Role = "Student" | "Teacher";
 
@@ -47,13 +83,13 @@ const ClassPage = (): React.ReactElement => {
       >
         {/* Màn hình bảng tin */}
         <TabPane tab="Bảng tin" key="news">
-          <News DetailClass={DetailClass} />
+          {detailClass && <News DetailClass={detailClass} />}
         </TabPane>
 
         {/* Màn hình mọi người */}
         <TabPane tab="Mọi người" key="members">
           {isTeacher(UserRoleInClass) ? (
-            <TeacherPeoplePage DetailClass={DetailClass} TeacherInClass={teachers} StudentInClass={students} />
+            <TeacherPeoplePage TeacherInClass={teachers} StudentInClass={students} />
           ) : (
             <StudentPeoplePage TeacherInClass={teachers} StudentInClass={students} />
           )}
@@ -70,7 +106,7 @@ const ClassPage = (): React.ReactElement => {
 
         {/* Màn hình trao đổi */}
         <TabPane tab="Trao đổi" key="communication" className="h-100 bg-body-white p-2">
-          {DetailClass && <ReviewPage />}
+          <ReviewPage />
         </TabPane>
       </Tabs>
     </div>

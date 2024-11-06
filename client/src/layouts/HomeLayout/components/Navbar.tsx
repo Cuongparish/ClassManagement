@@ -8,13 +8,20 @@ import { useNavigate } from 'react-router-dom';
 
 import "../../../App.css";
 import { useUser } from '../../../utils/UserContext';
+import { creatClass } from '../../../services/class.service';
 
 const { Header } = Layout;
+
+interface CreateClassFormValue {
+    className: string,
+    subject: string,
+    room?: string,
+}
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
 
-    const {setUser} = useUser();
+    const { user, setUser } = useUser();
 
     const [isJoinClassModalVisible, setJoinClassModalVisible] = useState(false);
     const [isCreateClassModalVisible, setCreateClassModalVisible] = useState(false);
@@ -40,15 +47,26 @@ const Navbar: React.FC = () => {
         setJoinClassModalVisible(false);
     };
 
-    const handleCreateClassSubmit = (values: unknown) => {
-        console.log('Create class with values:', values);
-        setCreateClassModalVisible(false);
+    const handleCreateClassSubmit = async (values: CreateClassFormValue) => {
+        try {
+            if(user)
+            {
+                const res = await creatClass(values.className, values.subject, values.room, user.idUser, user.Token)
+                // console.log(res);
+                navigate(`/class/${res?.data.id}`);
+            }
+
+            setCreateClassModalVisible(false);
+        } catch (error) {
+            console.log(error);
+        }
+        
     };
 
     const logout = () => {
         sessionStorage.removeItem("user");
         setUser(null);
-      };
+    };
 
     const dropdownStyle = {
         width: '200px',
@@ -144,18 +162,20 @@ const Navbar: React.FC = () => {
                     <Form.Item
                         name="className"
                         rules={[{ required: true, message: 'Vui lòng nhập tên lớp học!' }]}
+                        label="Tên lớp"
                     >
                         <Input placeholder="Tên lớp học" />
                     </Form.Item>
                     <Form.Item
                         name="subject"
                         rules={[{ required: true, message: 'Vui lòng nhập chủ đề!' }]}
+                        label="Chủ đề"
                     >
                         <Input placeholder="Chủ đề" />
                     </Form.Item>
                     <Form.Item
                         name="room"
-                        rules={[{ required: true, message: 'Vui lòng nhập phòng!' }]}
+                        label="Phòng học"
                     >
                         <Input placeholder="Phòng" />
                     </Form.Item>
