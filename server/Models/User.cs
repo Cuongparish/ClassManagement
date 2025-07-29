@@ -18,5 +18,8 @@ namespace server.Models
         public DateTime dob { get; set; }
         public string sex { get; set; } = string.Empty;
         public string phone { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal creditBalance { get; set; }
+
     }
 }

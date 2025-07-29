@@ -53,7 +53,7 @@ namespace server.Controllers
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
-
+            
             var user1 = await _userRepo.GetByUsernameAsync(user.UserName);
             var userModel = user1.ToUserDto();
 
